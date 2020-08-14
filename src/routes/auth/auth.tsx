@@ -4,7 +4,7 @@ import { setList, setCurrentShowing } from "../../modules/counter";
 import { push } from "connected-react-router";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { Form, Input, Button, Row, Col, Typography, message } from "antd";
+import { Form, Input, Button, Row, Col, Typography, message, Divider } from "antd";
 import { useEffect } from "react";
 
 const { Title, Paragraph , Link } = Typography;
@@ -74,8 +74,9 @@ function Auth(props) {
             </FullBtn>
           </Form.Item>
         </Form>
+        <Divider>Our terms</Divider>
         <Paragraph>
-            By logging in you are accepting our terms and conditions and privacy policy.You can read
+            By logging in you are accepting our terms and conditions and privacy policy. You can read
             those  
              <TermsLink href="https://ant.design" target="_blank">
                 here
