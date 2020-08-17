@@ -18,6 +18,7 @@ function Header(props) {
         <PageHeader
             className="site-page-header"
             title="Safe Hub"
+            subTitle={props.userProfile && props.userProfile.email ? "" : "Organisation Dashboard"}
             tags={props.userProfile && props.userProfile.email ? <Tag color="blue">{props.userProfile.email}</Tag> : undefined}
             extra={ props.userProfile.email ?  [
               <Button 
