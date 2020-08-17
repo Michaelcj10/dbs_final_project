@@ -5,6 +5,10 @@ export const setCookie = (cname: string, cvalue: string) => {
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 };
 
+export const deleteCookie = (cname: string) => {
+  document.cookie = cname + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+};
+
 export const getCookie = (cname: string) => {
         var name = cname + "=";
         var decodedCookie = decodeURIComponent(document.cookie);

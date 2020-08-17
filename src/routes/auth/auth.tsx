@@ -1,90 +1,75 @@
 import * as React from "react";
 import styled from "styled-components";
-import { setList, setCurrentShowing } from "../../modules/counter";
 import { push } from "connected-react-router";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { Form, Input, Button, Row, Col, Typography, message, Divider } from "antd";
-import { useEffect } from "react";
-import { makeGet, makePost } from "../../api/apiRequest";
+import { useEffect, useState } from "react";
+import { makePost } from "../../api/apiRequest";
 import { setCookie } from "../../services/cookie";
 
-const { Title, Paragraph , Link } = Typography;
+const { Title, Paragraph } = Typography;
 
 const FullBtn = styled(Button)`
   width: 100%;
 `;
-const TermsLink = styled(Link)`
-  margin-left:5px;
+
+const SwitchLink = styled(Button)`
+  padding: 0px;
 `;
 
-// tslint:disable-next-line: typedef
-function Auth(props) {
-  useEffect(() => {
-    message.info("Please login to continue");
-  // tslint:disable-next-line: align
+function Auth(props: { changePage: (arg0: string) => void; }) {
+
+  const [hasAccount, setHasAccount] = useState(true);
+  const [formLoading, setLoading] = useState(false);
+
+  useEffect(
+     () => {
+        message.info("Please login or register to continue");
   }, []);
 
-  const onFinish = async values => {
+  const onFinish = async (values: { id: string; password: string; }) => {
+
+    setLoading(true);
+
     const dataPost = {
       email: values.id,
       password: values.password
     };
     
     try {
-      const response = await makePost("register", dataPost);
-
-      // tslint:disable-next-line: no-console
-      console.log(response);
-
-      setCookie("token", response.token);
+      const response = await makePost(hasAccount ? "login" : "register", dataPost);
+      if (response.errors) {
+        message.error("Invalid details, try again");    
+        setLoading(false);
+      } else {
+        setCookie("token", response.token);
+        props.changePage("/");
+      }
     } catch (e) {
-      // tslint:disable-next-line: no-console
-      console.log("WHOOPS");
-    }
-  };
-
-  const onFinishFailed = async errorInfo => {
-    // tslint:disable-next-line: no-console
-    console.log("Failed:", errorInfo);
-
-    try {
-      const response = await makeGet("organisations");
-      const data = await response.json();
-      // tslint:disable-next-line: no-console
-      console.log(data);
-    } catch (e) {
-      // tslint:disable-next-line: no-console
-      console.log("WHOOPS");
+      message.error("Invalid details, try again");
+      setLoading(false);
     }
   };
 
   return (
     <div className="layout">
       <Row>
-        <Col span={2} md={8}/>     
-        <Col span={20} md={8}>
-          <Title>Welcome back</Title>
-        <p 
-          onClick={() => {
-              props.changePage("/");
-          }}
-        >
-          home
-        </p>
+        <Col span={2} lg={8}/>     
+        <Col span={20} lg={8}>
+        <Title>{hasAccount ? "Welcome back" : "Register now"}</Title>
         <Form
             layout="vertical"
             name="basic"
             initialValues={{ remember: true }}
             onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
         >
           <Form.Item
-            label="Organisation ID"
+            label="Email"
             name="id"
-            rules={[{ required: true, message: "Enter your Organisation ID" }]}
+            rules={[{ required: true, message: "Enter your email address" }]}
           >
-            <Input />
+            <Input disabled={formLoading} />
           </Form.Item>
 
           <Form.Item
@@ -92,40 +77,51 @@ function Auth(props) {
             name="password"
             rules={[{ required: true, message: "Enter your password" }]}
           >
-            <Input.Password />
+            <Input.Password disabled={formLoading} />
           </Form.Item>
           <Form.Item>
-            <FullBtn type="primary" htmlType="submit">
-              Submit
+            <FullBtn type="primary" htmlType="submit" loading={formLoading}>
+            {hasAccount ? "Login" : "Register"}
             </FullBtn>
           </Form.Item>
+          <SwitchLink 
+                type="link" 
+                size="large" 
+                onClick={() => {
+                   setHasAccount(!hasAccount);
+                }}
+          >
+              {hasAccount ? "New to the site? Register now" : "Have an account? Login now"}
+          </SwitchLink>
         </Form>
         <Divider>Our terms</Divider>
         <Paragraph>
             By logging in you are accepting our terms and conditions and privacy policy. You can read
-            those  
-             <TermsLink href="https://ant.design" target="_blank">
+            those &nbsp;
+             <SwitchLink 
+                  type="link" 
+                  onClick={() => {
+                      props.changePage("/privacy-policy");
+                  }}
+             >
                 here
-             </TermsLink>
+             </SwitchLink>
         </Paragraph>
         </Col>
-        <Col span={2} md={8}/>    
+        <Col span={2} lg={8}/>    
       </Row>
     </div>
   );
 }
 
 const mapStateToProps = ({ counter }) => ({
-  places: counter.placeList,
-  isLoading: counter.loading
+  userProfile: counter.userProfile
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       changePage: value => push(value),
-      setList,
-      setCurrentShowing
     },
     dispatch
   );

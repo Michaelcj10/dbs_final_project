@@ -1,6 +1,7 @@
 import * as React from "react";
 import Home from "../routes/home/home";
 import Auth from "../routes/auth/auth";
+import Privacy from "../routes/privacyPolicy/policy";
 import Header from "../components/navigation/header";
 import { createGlobalStyle } from "styled-components";
 import { Provider } from "react-redux";
@@ -11,7 +12,7 @@ import { Route } from "react-router-dom";
 
 const GlobalStyle = createGlobalStyle`
   .layout{
-    margin-top: 50px;
+    margin: 50px 0px;
   }
 `;
 
@@ -24,6 +25,7 @@ function App() {
         <Header/>
         <Route exact={true} path="/" component={Home} />
         <Route exact={true} path="/auth" component={Auth} />
+        <Route exact={true} path="/privacy-policy" component={Privacy} />
         </ConnectedRouter>
         <GlobalStyle />
       </PersistGate>

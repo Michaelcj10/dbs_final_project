@@ -1,10 +1,11 @@
-import { PageHeader } from "antd";
+import { PageHeader, Button, Tag } from "antd";
+import { setUserProfile } from "../../modules/counter";
 import * as React from "react";
 import styled from "styled-components";
-import { setList, setCurrentShowing } from "../../modules/counter";
 import { push } from "connected-react-router";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
+import { deleteCookie } from "../../services/cookie";
 
 const HeaderStyle = styled.div`
     border: 1px solid rgb(235, 237, 240);
@@ -12,29 +13,37 @@ const HeaderStyle = styled.div`
 
 // tslint:disable-next-line: typedef
 function Header(props) {
-  // const [showModal, setModalShowing] = useState(false);
   return (
     <HeaderStyle>
         <PageHeader
             className="site-page-header"
             title="Safe Hub"
-            subTitle="Organisation Dashboard"
+            tags={props.userProfile && props.userProfile.email ? <Tag color="blue">{props.userProfile.email}</Tag> : undefined}
+            extra={ props.userProfile.email ?  [
+              <Button 
+                  key="1" 
+                  onClick={() => {
+                    props.setUserProfile({});
+                    deleteCookie("token");
+                    props.changePage("/auth");
+                  }}
+              >Logout
+              </Button>
+            ] : []}
         />
     </HeaderStyle>
   );
 }
 
 const mapStateToProps = ({ counter }) => ({
-  places: counter.placeList,
-  isLoading: counter.loading
+    userProfile: counter.userProfile
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       changePage: value => push(value),
-      setList,
-      setCurrentShowing
+      setUserProfile
     },
     dispatch
   );

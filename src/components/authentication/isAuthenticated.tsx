@@ -1,27 +1,34 @@
-import { setList, setCurrentShowing } from "../../modules/counter";
+import { setUserProfile } from "../../modules/counter";
 import { push } from "connected-react-router";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { useState, useEffect } from "react";
 import React from "react";
 import PageLoader from "../loader/pageLoader";
-import { getCookie } from "../../services/cookie";
+import { makeGet } from "../../api/apiRequest";
 
 // tslint:disable-next-line: typedef
 function IsAuthenticated(props) {
   const [checked, setChecked] = useState(false);
 
-  useEffect(() => {
-
-    const authCookie = getCookie("xauth");
-
-    if (authCookie) {
-        setChecked(true);
-    } else {
-      props.changePage("/auth");
+  useEffect( () => {
+    async function fetchMyAPI() {
+      try {
+        const response = await makeGet("me");
+        if (!response || !response.user) {
+          props.changePage("/auth");
+        } else {
+          props.setUserProfile(response.user);
+          setChecked(true);      
+        }
+    
+      } catch (error) {
+        props.changePage("/auth");
+      }
     }
-  // tslint:disable-next-line: align
-  }, []);
+
+    fetchMyAPI();
+},           [] );
 
   if (!checked) {
       return <PageLoader />;
@@ -31,16 +38,14 @@ function IsAuthenticated(props) {
 }
 
 const mapStateToProps = ({ counter }) => ({
-  places: counter.placeList,
-  isLoading: counter.loading
+  userProfile: counter.userProfile
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       changePage: value => push(value),
-      setList,
-      setCurrentShowing
+      setUserProfile
     },
     dispatch
   );

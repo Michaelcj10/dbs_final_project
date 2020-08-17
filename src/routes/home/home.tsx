@@ -1,47 +1,36 @@
 import * as React from "react";
-import styled from "styled-components";
-import { setList, setCurrentShowing } from "../../modules/counter";
 import { push } from "connected-react-router";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import IsAuthenticated from "../../components/authentication/isAuthenticated";
+import { Row, Col, Typography } from "antd";
 
-const HomeStyle = styled.div`
-
-`;
+const { Title } = Typography;
 
 // tslint:disable-next-line: typedef
 function Home(props) {
-  // tslint:disable-next-line: no-console
-  console.log(props);
-  // const [showModal, setModalShowing] = useState(false);
   return (
     <IsAuthenticated>
-      <HomeStyle>
-                <p 
-                  onClick={() => {
-                    props.changePage("/auth");
-                  }}
-                >
-                  auth
-                </p>
-          
-      </HomeStyle>
+      <div className="layout">
+        <Row>
+          <Col span={2} lg={8}/>     
+          <Col span={20} lg={8}>
+           <Title>Dashboard</Title>
+          </Col>
+        </Row>
+      </div>
     </IsAuthenticated>
   );
 }
 
 const mapStateToProps = ({ counter }) => ({
-  places: counter.placeList,
-  isLoading: counter.loading
+  userProfile: counter.userProfile
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       changePage: value => push(value),
-      setList,
-      setCurrentShowing
     },
     dispatch
   );
