@@ -6,6 +6,8 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { Form, Input, Button, Row, Col, Typography, message, Divider } from "antd";
 import { useEffect } from "react";
+import { makeGet, makePost } from "../../api/apiRequest";
+import { setCookie } from "../../services/cookie";
 
 const { Title, Paragraph , Link } = Typography;
 
@@ -23,14 +25,38 @@ function Auth(props) {
   // tslint:disable-next-line: align
   }, []);
 
-  const onFinish = values => {
-    // tslint:disable-next-line: no-console
-    console.log("Success:", values);
+  const onFinish = async values => {
+    const dataPost = {
+      email: values.id,
+      password: values.password
+    };
+    
+    try {
+      const response = await makePost("register", dataPost);
+
+      // tslint:disable-next-line: no-console
+      console.log(response);
+
+      setCookie("token", response.token);
+    } catch (e) {
+      // tslint:disable-next-line: no-console
+      console.log("WHOOPS");
+    }
   };
 
-  const onFinishFailed = errorInfo => {
+  const onFinishFailed = async errorInfo => {
     // tslint:disable-next-line: no-console
     console.log("Failed:", errorInfo);
+
+    try {
+      const response = await makeGet("organisations");
+      const data = await response.json();
+      // tslint:disable-next-line: no-console
+      console.log(data);
+    } catch (e) {
+      // tslint:disable-next-line: no-console
+      console.log("WHOOPS");
+    }
   };
 
   return (
