@@ -1,15 +1,15 @@
-export const setCookie = (cname: string, cvalue: string) => {
+export const setCookie = (cname: string, cvalue: string): void => {
     var d = new Date();
     d.setTime(d.getTime() + (30 * 24 * 60 * 60 * 1000));
     var expires = "expires=" + d.toUTCString();
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 };
 
-export const deleteCookie = (cname: string) => {
+export const deleteCookie = (cname: string): void => {
   document.cookie = cname + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
 };
 
-export const getCookie = (cname: string) => {
+export const getCookie = (cname: string): string => {
         var name = cname + "=";
         var decodedCookie = decodeURIComponent(document.cookie);
         var ca = decodedCookie.split(";");

@@ -18,7 +18,7 @@ function IsAuthenticated(props) {
         if (!response || !response.user) {
           props.changePage("/auth");
         } else {
-          props.setUserProfile(response.user);
+          props.setUserProfile(response);
           setChecked(true);      
         }
     

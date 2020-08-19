@@ -58,5 +58,8 @@ export const makePostWithAuth = async (url: string, postData ) => {
  
      return await fetchReq(apiUrl + url, fetchData, {
          method: "POST"
-       }).then(res => res.json());
+       }).then(res => res.json()).catch((err) => {
+          // tslint:disable-next-line: no-console
+          console.log(err);
+       });
  };
