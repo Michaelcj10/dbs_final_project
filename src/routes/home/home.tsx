@@ -3,7 +3,7 @@ import { push } from "connected-react-router";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import IsAuthenticated from "../../components/authentication/isAuthenticated";
-import { Row, Col, Typography, List, Avatar, Space, Divider, Skeleton , Button } from "antd";
+import { Row, Col, Typography, List, Avatar, Space, Divider, Skeleton , Button, Input } from "antd";
 import { UserOutlined, MessageOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import { useState } from "react";
@@ -12,6 +12,7 @@ import { MessageItem } from "../../domain/interfaces";
 import { getTimeFrameFromNow } from "../../services/date";
 
 const { Title } = Typography;
+const { Search } = Input;
 
 const StyledSpanHeading = styled.span`
   font-weight:bold;
@@ -27,9 +28,19 @@ const AddButton = styled(Button)`
   font-weight:bold;
 `;
 
+const SearchInput = styled(Search)`
+  margin-bottom: 25px;
+`;
+
+const Flex = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
 // tslint:disable-next-line: typedef
 function Home(props) {
   const [messages, setMessages] = useState<MessageItem[]|null>(null);
+  const [filter, setFilter] = useState<string>("");
   const colorAvatarPallete = ["#87d068", "#f56a00", "#1890ff"];
  
   React.useEffect( () => {
@@ -52,6 +63,21 @@ function Home(props) {
     </Space>
   );
 
+  const getFiltered = (): MessageItem[] => {
+    let filtered: MessageItem[] = messages ? messages : [];
+
+    if (filter !== "") {
+
+      if (messages) {
+         filtered = messages!.filter(x => x.username.indexOf(filter) > -1);
+      }
+
+      return filtered;  
+    }
+
+    return filtered;
+  };
+
   return (
     <IsAuthenticated>
       <div className="layout">
@@ -60,21 +86,31 @@ function Home(props) {
           <Col span={20} lg={12}>
             <Title>Message center</Title>
             <Divider orientation="left" plain={true} >{`Messages total (${messages?.length})`}</Divider>
-                <AddButton 
+                <Flex>
+                  <SearchInput
+                    allowClear={true}
+                    onChange={(e) => {
+                      setFilter(e.currentTarget.value); 
+                    }}
+                    placeholder="Search username"
+                    style={{ width: 200 }}
+                  />
+                  <AddButton 
                     type="link" 
                     size="large" 
                     onClick={() => {
                       props.changePage("/add-message");
                     }}
-                >
+                  >
                     Add new message
-                </AddButton>
+                  </AddButton>
+                </Flex>
             {messages === null  ? <div> {[1, 2, 3, 4].map( (x, y) => {
                 return <Skeleton key={y} loading={true} active={true} avatar={true} />;
             })} </div> : 
            <List
               itemLayout="horizontal"
-              dataSource={messages}
+              dataSource={getFiltered()}
               renderItem={(message, i) => (
                 <List.Item
                    
