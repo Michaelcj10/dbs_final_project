@@ -13,14 +13,15 @@ const HeaderStyle = styled.div`
 
 // tslint:disable-next-line: typedef
 function Header(props) {
+  const loggedIn = props.userProfile && props.userProfile.user && props.userProfile.user.email;
   return (
     <HeaderStyle>
         <PageHeader
             className="site-page-header"
             title="Safe Hub"
             subTitle={props.userProfile && props.userProfile.email ? "" : "Organisation Dashboard"}
-            tags={props.userProfile && props.userProfile.email ? <Tag color="blue">{props.userProfile.email}</Tag> : undefined}
-            extra={ props.userProfile.email ?  [
+            tags={loggedIn ? <Tag color="blue">{props.userProfile.user.email}</Tag> : undefined}
+            extra={loggedIn ?  [
               <Button 
                   key="1" 
                   onClick={() => {
