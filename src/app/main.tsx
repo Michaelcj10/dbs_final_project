@@ -4,6 +4,7 @@ import Auth from "../routes/auth/auth";
 import Privacy from "../routes/privacyPolicy/policy";
 import Header from "../components/navigation/header";
 import AddMessage from "../routes/messages/addMessage";
+import UserProfile from "../routes/profile/userProfile";
 import { createGlobalStyle } from "styled-components";
 import { Provider } from "react-redux";
 import { ConnectedRouter } from "connected-react-router";
@@ -28,6 +29,7 @@ function App() {
         <Route exact={true} path="/add-message" component={AddMessage} />
         <Route exact={true} path="/auth" component={Auth} />
         <Route exact={true} path="/privacy-policy" component={Privacy} />
+        <Route exact={true} path="/profile" component={UserProfile} />
         </ConnectedRouter>
         <GlobalStyle />
       </PersistGate>

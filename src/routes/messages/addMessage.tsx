@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import { Form, Input, Button, Row, Col, Typography, message } from "antd";
 import { useState } from "react";
 import { makePostWithAuth } from "../../api/apiRequest";
+import IsAuthenticated from "../../components/authentication/isAuthenticated";
 
 const { Title } = Typography;
 
@@ -16,16 +17,12 @@ const FullBtn = styled(Button)`
 function AddMessage(props: { userProfile: { user: { email: string; }; }; }) {
 
  const [form] = Form.useForm();
-
- // tslint:disable-next-line: no-console
- console.log(props);
-
  const [formLoading, setLoading] = useState(false);
 
  const resetForm = (): void => {
   setLoading(false);
   form.resetFields();
-};
+ };
 
  const onFinish = async (values) => {
     const dataPost = {
@@ -47,7 +44,8 @@ function AddMessage(props: { userProfile: { user: { email: string; }; }; }) {
  };
 
  return (
-    <div className="layout">
+   <IsAuthenticated>
+     <div className="layout">
       <Row>
         <Col span={2} lg={8}/>     
         <Col span={20} lg={8}>
@@ -64,14 +62,18 @@ function AddMessage(props: { userProfile: { user: { email: string; }; }; }) {
             name="title"
             rules={[{ required: true, message: "Please enter a title" }]}
           >
-            <Input disabled={formLoading} />
+            <Input
+              disabled={formLoading} 
+            />
           </Form.Item>
           <Form.Item
             label="Comment"
             name="comment"
             rules={[{ required: true, message: "Please enter a comment" }]}
           >
-            <Input disabled={formLoading} />
+            <Input
+              disabled={formLoading} 
+            />
           </Form.Item>
           <Form.Item>
             <FullBtn type="primary" htmlType="submit" loading={formLoading}>
@@ -83,6 +85,7 @@ function AddMessage(props: { userProfile: { user: { email: string; }; }; }) {
         <Col span={2} lg={8}/>    
       </Row>
     </div>
+   </IsAuthenticated>
   );
 }
 

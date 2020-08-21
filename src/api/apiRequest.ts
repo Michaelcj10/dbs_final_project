@@ -39,12 +39,12 @@ export const makePost = async (url: string, postData ) => {
       }).then(res => res.json());
 };
 
-export const makePostWithAuth = async (url: string, postData ) => {
+export const makePostWithAuth = async (url: string, postData, isPut: boolean = false ) => {
 
      const cookieAuth = getCookie("token");
  
      let fetchData = {
-           method: "POST",
+           method: isPut ? "PUT" : "POST",
            headers: {
              Accept: "application/json",
              "Content-Type": "application/json",

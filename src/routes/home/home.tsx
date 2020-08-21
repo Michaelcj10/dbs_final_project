@@ -85,7 +85,7 @@ function Home(props) {
           <Col span={2} lg={6}/>     
           <Col span={20} lg={12}>
             <Title>Message center</Title>
-            <Divider orientation="left" plain={true} >{`Messages total (${messages?.length})`}</Divider>
+            <Divider orientation="left" plain={true} >{`Messages total (${messages?.length ? messages.length : ""})`}</Divider>
                 <Flex>
                   <SearchInput
                     allowClear={true}

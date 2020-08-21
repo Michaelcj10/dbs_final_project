@@ -1,4 +1,4 @@
-import { PageHeader, Button, Tag } from "antd";
+import { PageHeader, Button } from "antd";
 import { setUserProfile } from "../../modules/counter";
 import * as React from "react";
 import styled from "styled-components";
@@ -11,6 +11,11 @@ const HeaderStyle = styled.div`
     border: 1px solid rgb(235, 237, 240);
 `;
 
+const StyledSpanHeading = styled(Button)`
+  font-weight:bold;
+  padding: 0px;
+`;
+
 // tslint:disable-next-line: typedef
 function Header(props) {
   const loggedIn = props.userProfile && props.userProfile.user && props.userProfile.user.email;
@@ -20,17 +25,24 @@ function Header(props) {
             className="site-page-header"
             title="Safe Hub"
             subTitle={props.userProfile && props.userProfile.email ? "" : "Organisation Dashboard"}
-            tags={loggedIn ? <Tag color="blue">{props.userProfile.user.email}</Tag> : undefined}
             extra={loggedIn ?  [
+              <StyledSpanHeading 
+                  key="1"
+                  type="link" 
+                  onClick={() => {
+                    props.changePage("/profile");
+                  }}
+              >{props.userProfile.user.email}
+              </StyledSpanHeading>,
               <Button 
-                  key="1" 
                   onClick={() => {
                     props.setUserProfile({});
                     deleteCookie("token");
                     props.changePage("/auth");
                   }}
+                  key="2"
               >Logout
-              </Button>
+              </Button>,
             ] : []}
         />
     </HeaderStyle>
