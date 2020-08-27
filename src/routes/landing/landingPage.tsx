@@ -23,12 +23,12 @@ const SmallCol = styled(Col)`
 `;
 
 const MainIllustration = styled.img`
-    max-width: 100%;
+    max-width: 60%;
     margin-bottom: 50px;
 `;
 
 const SmallIllustration = styled.img`
-    max-width: 40%;
+    max-width: 80%;
     margin-bottom: 50px;
 `;
 
@@ -37,22 +37,26 @@ const SwitchLink = styled(Button)`
   font-weight: bold;
 `;
 
+const StyledTitle = styled(Title)`
+  border-bottom: 1px solid;
+`;
+
 function Landing(props: { changePage: (arg0: string) => void; }) {
   return (
       <div className="layout">
         <Container>
             <Row>
             <Col span={2} lg={6}/>  
-            <Col span={20} lg={12}>
+            <SmallCol span={20} lg={12}>
                 <MainIllustration src={landingImg} alt="landing woman image"/>
-            </Col>
+            </SmallCol>
             </Row>
             <StyledRow>
             <Col span={2} lg={6}/>  
             <Col span={20} lg={6}>
                 <Title>Safe Hub</Title>
-                <Title level={3}>Who are we
-                </Title>
+                <StyledTitle level={3}>Who are we
+                </StyledTitle>
                 <Paragraph>
                     We are a company striving to provide a safe, collaborative enviornment for domestic
                     vioelnce organisations to communicate and provide a high level of support and care for the 
@@ -67,8 +71,8 @@ function Landing(props: { changePage: (arg0: string) => void; }) {
             <StyledRow>
             <Col span={2} lg={6}/>  
             <Col span={20} lg={12}>
-                <Title level={3}>What is Safe Hub 
-                </Title>
+                <StyledTitle level={3}>What is Safe Hub 
+                </StyledTitle>
                 <Paragraph>
                     Safe Hub is an online application where organisations can communicate via a central dahsboard.
                     Messages can be sent between organisations and information shared privately and securly between
@@ -77,8 +81,8 @@ function Landing(props: { changePage: (arg0: string) => void; }) {
                     All data is encrypted and we are GDPR compliant.
                 </Paragraph>
                 <Divider />
-                <Title level={3}>Get involved
-                </Title>
+                <StyledTitle level={3}>Get involved
+                </StyledTitle>
                 <Paragraph>
                     To avail of the service, please either register your organisation and we will contact you
                     to confirm your details, or if you are already a valued client &nbsp;

@@ -6,6 +6,7 @@ import { push } from "connected-react-router";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { deleteCookie, deleteSession } from "../../services/cookie";
+import { HomeOutlined } from "@ant-design/icons";
 
 const HeaderStyle = styled.div`
     border: 1px solid rgb(235, 237, 240);
@@ -22,6 +23,10 @@ function Header(props) {
   return (
     <HeaderStyle>
         <PageHeader
+            onBack={() => {
+              props.changePage("/");
+            }}
+            backIcon={<HomeOutlined />}
             className="site-page-header"
             title="Safe Hub"
             subTitle={props.userProfile && props.userProfile.email ? "" : "Organisation Dashboard"}

@@ -16,6 +16,7 @@ const FullBtn = styled(Button)`
 
 const SwitchLink = styled(Button)`
   padding: 0px;
+  font-weight: bold;
 `;
 
 function Auth(props: { changePage: (arg0: string) => void; }) {
