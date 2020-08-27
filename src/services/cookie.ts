@@ -24,3 +24,7 @@ export const getCookie = (cname: string): string => {
         }
         return "";
 };
+
+export const deleteSession = (): void => {
+  localStorage.removeItem("persist:root");
+};

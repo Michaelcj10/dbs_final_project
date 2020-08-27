@@ -44,7 +44,7 @@ function Auth(props: { changePage: (arg0: string) => void; }) {
         setLoading(false);
       } else {
         setCookie("token", response.token);
-        props.changePage("/");
+        props.changePage("/dashboard");
       }
     } catch (e) {
       message.error("Invalid details, try again");

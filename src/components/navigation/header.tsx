@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { push } from "connected-react-router";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { deleteCookie } from "../../services/cookie";
+import { deleteCookie, deleteSession } from "../../services/cookie";
 
 const HeaderStyle = styled.div`
     border: 1px solid rgb(235, 237, 240);
@@ -37,6 +37,7 @@ function Header(props) {
               <Button 
                   onClick={() => {
                     props.setUserProfile({});
+                    deleteSession();
                     deleteCookie("token");
                     props.changePage("/auth");
                   }}
