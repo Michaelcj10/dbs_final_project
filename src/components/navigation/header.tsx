@@ -1,4 +1,4 @@
-import { PageHeader, Button } from "antd";
+import { PageHeader, Button, Menu , Dropdown } from "antd";
 import { setUserProfile } from "../../modules/counter";
 import * as React from "react";
 import styled from "styled-components";
@@ -6,7 +6,7 @@ import { push } from "connected-react-router";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { deleteCookie, deleteSession } from "../../services/cookie";
-import { HomeOutlined } from "@ant-design/icons";
+import { HomeOutlined, EllipsisOutlined } from "@ant-design/icons";
 
 const HeaderStyle = styled.div`
     border: 1px solid rgb(235, 237, 240);
@@ -17,9 +17,73 @@ const StyledSpanHeading = styled(Button)`
   padding: 0px;
 `;
 
+const SwitchLink = styled(Button)`
+  padding: 0px;
+  color: rgba(0, 0, 0, 0.65);
+`;
+
 // tslint:disable-next-line: typedef
 function Header(props) {
   const loggedIn = props.userProfile && props.userProfile.user && props.userProfile.user.email;
+  
+  const menu = (
+    <Menu>
+      <Menu.Item>
+        <SwitchLink 
+            type="link"
+            onClick={() => {
+              props.changePage("/dashboard");
+            }}
+        >
+           Dashboard
+        </SwitchLink>
+      </Menu.Item>
+      <Menu.Item>
+        <SwitchLink 
+            type="link"
+            onClick={() => {
+              props.changePage("/profile");
+            }}
+        >
+           Profile
+        </SwitchLink>
+      </Menu.Item>
+      <Menu.Item>
+        <SwitchLink 
+            type="link"
+            onClick={() => {
+              props.setUserProfile({});
+              deleteSession();
+              deleteCookie("token");
+              props.changePage("/auth");
+            }}
+        >
+           Logout
+        </SwitchLink>
+      </Menu.Item>
+    </Menu>
+  );
+
+  const DropdownMenu = () => {
+    return (
+      <Dropdown key="more" overlay={menu}>
+        <Button
+          style={{
+            border: "none",
+            padding: 0,
+          }}
+        >
+          <EllipsisOutlined
+            style={{
+              fontSize: 20,
+              verticalAlign: "top",
+            }}
+          />
+        </Button>
+      </Dropdown>
+    );
+  };
+
   return (
     <HeaderStyle>
         <PageHeader
@@ -29,7 +93,7 @@ function Header(props) {
             backIcon={<HomeOutlined />}
             className="site-page-header"
             title="Safe Hub"
-            subTitle={props.userProfile && props.userProfile.email ? "" : "Organisation Dashboard"}
+            subTitle={props.userProfile && props.userProfile.email ? "" : "Dashboard"}
             extra={loggedIn ?  [
               <StyledSpanHeading 
                   key="1"
@@ -39,17 +103,17 @@ function Header(props) {
                   }}
               >{props.userProfile.user.email}
               </StyledSpanHeading>,
-              <Button 
+               <DropdownMenu key="more" />
+            ] : [
+              <StyledSpanHeading 
+                  key="3"
+                  type="link" 
                   onClick={() => {
-                    props.setUserProfile({});
-                    deleteSession();
-                    deleteCookie("token");
                     props.changePage("/auth");
                   }}
-                  key="2"
-              >Logout
-              </Button>,
-            ] : []}
+              >Login|Register
+              </StyledSpanHeading>
+            ]}
         />
     </HeaderStyle>
   );

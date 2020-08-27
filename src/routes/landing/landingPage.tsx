@@ -41,6 +41,11 @@ const StyledTitle = styled(Title)`
   border-bottom: 1px solid;
 `;
 
+const CustomTitle = styled(Title)`
+    background: #1890ff;
+    border-radius: 0px 20px 5px 0px;
+`;
+
 function Landing(props: { changePage: (arg0: string) => void; }) {
   return (
       <div className="layout">
@@ -54,7 +59,7 @@ function Landing(props: { changePage: (arg0: string) => void; }) {
             <StyledRow>
             <Col span={2} lg={6}/>  
             <Col span={20} lg={6}>
-                <Title>Safe Hub</Title>
+                <CustomTitle style={{color: "#fff"}}>Safe Hub</CustomTitle>
                 <StyledTitle level={3}>Who are we
                 </StyledTitle>
                 <Paragraph>
