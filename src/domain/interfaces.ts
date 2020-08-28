@@ -1,8 +1,18 @@
 export interface MessageItem {
   Created_date?: Date;
   comment: string;
-  replies: [];
+  replies: CommentReply[];
   title: string;
+  username: string;
+  _id?: string;
+}
+
+export interface CommentReply {
+  Created_date: Date;
+  reply: {
+    reply: string;
+    username: string;
+  };
   username: string;
   _id?: string;
 }

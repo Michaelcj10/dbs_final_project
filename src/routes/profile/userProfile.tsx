@@ -43,14 +43,14 @@ function UserProfile(props) {
       return val ? val : "";
     };
 
-    const onFinish = async (values: { address: string; location: string; number: string; facebook: string; twitter: string; name: string; }) => {
+    const onFinish = async (values: { address: string; location: string; number: string; facebook: string; twitter: string; website: string; name: string; }) => {
       const dataPost: Organisation = {
         address: setFormVal(values.address),
         location: setFormVal(values.location),
         contactNumber: setFormVal(values.number),
         facebook: setFormVal(values.facebook),
         twitter: setFormVal(values.twitter),
-        website: setFormVal(values.twitter),
+        website: setFormVal(values.website),
         name: setFormVal(values.name),
         userId: id
       };
