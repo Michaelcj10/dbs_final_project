@@ -10,6 +10,7 @@ import { useState } from "react";
 import { makeGet } from "../../api/apiRequest";
 import { MessageItem } from "../../domain/interfaces";
 import { getTimeFrameFromNow } from "../../services/date";
+import { setViewedMsg } from "../../modules/counter";
 
 const { Title } = Typography;
 const { Search } = Input;
@@ -113,11 +114,10 @@ function Home(props) {
               dataSource={getFiltered()}
               renderItem={(message, i) => (
                 <List.Item
-                   
                    style={{cursor: "pointer"}}
                    onClick={() => {
-                     // tslint:disable-next-line: no-console
-                     console.log("go somewhere");
+                     props.setViewedMsg(message);
+                     props.changePage("/view-message");
                    }}
                    actions={[
                   <IconText icon={MessageOutlined} text={message.replies.length} key="list-vertical-message" />,
@@ -125,7 +125,7 @@ function Home(props) {
                 >
                   <List.Item.Meta
                     avatar={<Avatar style={{backgroundColor: i % 3 === 0 ? colorAvatarPallete[2] :  i % 2 === 0 ?  colorAvatarPallete[1] : colorAvatarPallete[0]}} icon={<UserOutlined />} />}
-                    title={<StyledSpanHeading>{message.title} <span>{getTimeFrameFromNow(message.Created_date)}</span></StyledSpanHeading>}
+                    title={<StyledSpanHeading>{message.title} <span>{getTimeFrameFromNow(message.Created_date!)}</span></StyledSpanHeading>}
                     description={message.username}
                     
                   />
@@ -148,6 +148,7 @@ const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       changePage: value => push(value),
+      setViewedMsg
     },
     dispatch
   );

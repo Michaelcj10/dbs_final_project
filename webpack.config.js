@@ -51,10 +51,6 @@ module.exports = {
           "image-webpack-loader?bypassOnDebug&optimizationLevel=7&interlaced=false"
         ]
       },
-      {
-        test: /\.css$/i,
-        use: ["style-loader", "css-loader"]
-      },
       // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
       {
         enforce: "pre",

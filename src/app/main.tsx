@@ -1,17 +1,12 @@
 import * as React from "react";
-import Home from "../routes/home/home";
-import Auth from "../routes/auth/auth";
-import Privacy from "../routes/privacyPolicy/policy";
 import Header from "../components/navigation/header";
-import AddMessage from "../routes/messages/addMessage";
-import Landing from "../routes/landing/landingPage";
-import UserProfile from "../routes/profile/userProfile";
 import { createGlobalStyle } from "styled-components";
 import { Provider } from "react-redux";
 import { ConnectedRouter } from "connected-react-router";
 import store, { history } from "../store/mainStore";
 import { PersistGate } from "redux-persist/integration/react";
 import { Route } from "react-router-dom";
+import { Suspense } from "react";
 
 const GlobalStyle = createGlobalStyle`
   .layout{
@@ -19,23 +14,34 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
+const Landing = React.lazy(() => import("../routes/landing/landingPage"));
+const Home = React.lazy(() => import("../routes/home/home"));
+const AddMessage = React.lazy(() => import("../routes/messages/addMessage"));
+const ViewMessage = React.lazy(() => import("../routes/messages/viewMessage"));
+const Auth = React.lazy(() => import("../routes/auth/auth"));
+const Privacy = React.lazy(() => import("../routes/privacyPolicy/policy"));
+const UserProfile = React.lazy(() => import("../routes/profile/userProfile"));
+
 function App() {
 
   return (
+   <Suspense fallback={null}>
     <Provider store={store.store}>
-      <PersistGate loading={null} persistor={store.persistor}>
-        <ConnectedRouter history={history}>
-        <Header/>
-        <Route exact={true} path="/" component={Landing} />
-        <Route exact={true} path="/dashboard" component={Home} />
-        <Route exact={true} path="/add-message" component={AddMessage} />
-        <Route exact={true} path="/auth" component={Auth} />
-        <Route exact={true} path="/privacy-policy" component={Privacy} />
-        <Route exact={true} path="/profile" component={UserProfile} />
-        </ConnectedRouter>
-        <GlobalStyle />
-      </PersistGate>
-    </Provider>
+        <PersistGate loading={null} persistor={store.persistor}>
+          <ConnectedRouter history={history}>
+          <Header/>
+          <Route exact={true} path="/" component={Landing} />
+          <Route exact={true} path="/dashboard" component={Home} />
+          <Route exact={true} path="/add-message" component={AddMessage} />
+          <Route exact={true} path="/view-message" component={ViewMessage} />
+          <Route exact={true} path="/auth" component={Auth} />
+          <Route exact={true} path="/privacy-policy" component={Privacy} />
+          <Route exact={true} path="/profile" component={UserProfile} />
+          </ConnectedRouter>
+          <GlobalStyle />
+        </PersistGate>
+      </Provider>
+    </Suspense>
   );
 }
 

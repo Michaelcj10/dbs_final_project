@@ -1,4 +1,4 @@
-import { PageHeader, Button, Menu , Dropdown } from "antd";
+import { PageHeader, Button, Menu  } from "antd";
 import { setUserProfile } from "../../modules/counter";
 import * as React from "react";
 import styled from "styled-components";
@@ -6,7 +6,9 @@ import { push } from "connected-react-router";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { deleteCookie, deleteSession } from "../../services/cookie";
-import { HomeOutlined, EllipsisOutlined } from "@ant-design/icons";
+import { HomeOutlined, MailOutlined, SettingOutlined } from "@ant-design/icons";
+import SubMenu from "antd/lib/menu/SubMenu";
+import { useState } from "react";
 
 const HeaderStyle = styled.div`
     border: 1px solid rgb(235, 237, 240);
@@ -25,65 +27,12 @@ const SwitchLink = styled(Button)`
 // tslint:disable-next-line: typedef
 function Header(props) {
   const loggedIn = props.userProfile && props.userProfile.user && props.userProfile.user.email;
-  
-  const menu = (
-    <Menu>
-      <Menu.Item>
-        <SwitchLink 
-            type="link"
-            onClick={() => {
-              props.changePage("/dashboard");
-            }}
-        >
-           Dashboard
-        </SwitchLink>
-      </Menu.Item>
-      <Menu.Item>
-        <SwitchLink 
-            type="link"
-            onClick={() => {
-              props.changePage("/profile");
-            }}
-        >
-           Profile
-        </SwitchLink>
-      </Menu.Item>
-      <Menu.Item>
-        <SwitchLink 
-            type="link"
-            onClick={() => {
-              props.setUserProfile({});
-              deleteSession();
-              deleteCookie("token");
-              props.changePage("/auth");
-            }}
-        >
-           Logout
-        </SwitchLink>
-      </Menu.Item>
-    </Menu>
-  );
+  const [current, setCurrent] = useState<string>("");
 
-  const DropdownMenu = () => {
-    return (
-      <Dropdown key="more" overlay={menu}>
-        <Button
-          style={{
-            border: "none",
-            padding: 0,
-          }}
-        >
-          <EllipsisOutlined
-            style={{
-              fontSize: 20,
-              verticalAlign: "top",
-            }}
-          />
-        </Button>
-      </Dropdown>
-    );
+  const handleClick = e => {
+    setCurrent(e.key);
   };
-
+  
   return (
     <HeaderStyle>
         <PageHeader
@@ -101,9 +50,8 @@ function Header(props) {
                   onClick={() => {
                     props.changePage("/profile");
                   }}
-              >{props.userProfile.user.email}
-              </StyledSpanHeading>,
-               <DropdownMenu key="more" />
+              >{`Welcome, ${props.userProfile.user.email}`}
+              </StyledSpanHeading>
             ] : [
               <StyledSpanHeading 
                   key="3"
@@ -115,6 +63,56 @@ function Header(props) {
               </StyledSpanHeading>
             ]}
         />
+        {loggedIn &&
+         <Menu onClick={handleClick} selectedKeys={[current]} mode="horizontal">
+          <Menu.Item key="mail"  icon={<MailOutlined />}>
+              <SwitchLink 
+                  type="link"
+                  onClick={() => {
+                    props.changePage("/dashboard");
+                  }}
+              >
+                Dashboard
+              </SwitchLink>
+          </Menu.Item>
+          <SubMenu icon={<SettingOutlined />} title="Options">
+            <Menu.ItemGroup title="Pages">
+                  <Menu.Item>
+              <SwitchLink 
+                  type="link"
+                  onClick={() => {
+                    props.changePage("/dashboard");
+                  }}
+              >
+                Dashboard
+              </SwitchLink>
+            </Menu.Item>
+            <Menu.Item>
+              <SwitchLink 
+                  type="link"
+                  onClick={() => {
+                    props.changePage("/profile");
+                  }}
+              >
+                Profile
+              </SwitchLink>
+            </Menu.Item>
+            <Menu.Item>
+              <SwitchLink 
+                  type="link"
+                  onClick={() => {
+                    props.setUserProfile({});
+                    deleteSession();
+                    deleteCookie("token");
+                    props.changePage("/auth");
+                  }}
+              >
+                Logout
+              </SwitchLink>
+            </Menu.Item>
+            </Menu.ItemGroup>
+          </SubMenu>
+      </Menu>}
     </HeaderStyle>
   );
 }

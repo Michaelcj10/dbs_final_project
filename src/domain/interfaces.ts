@@ -1,10 +1,18 @@
 export interface MessageItem {
-  Created_date: Date;
+  Created_date?: Date;
   comment: string;
   replies: [];
   title: string;
   username: string;
-  _id: string;
+  _id?: string;
+}
+
+export interface UserProfile {
+  detail: string;
+  title: string;
+  user: {email: string };
+  email: string;
+  userId?: string;
 }
 
 export interface Organisation {
