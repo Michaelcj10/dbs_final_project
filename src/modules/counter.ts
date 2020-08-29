@@ -1,6 +1,7 @@
-export const SET_USER_PROFILE = "SET_USER_PROFILE";
-export const SET_VIEWED_MSG = "SET_VIEWED_MSG";
-import { MessageItem, UserProfile } from "../domain/interfaces";
+const SET_USER_PROFILE = "SET_USER_PROFILE";
+const SET_VIEWED_MSG = "SET_VIEWED_MSG";
+const SET_USER_ORG = "SET_USER_ORG";
+import { MessageItem, UserProfile, Organisation } from "../domain/interfaces";
 
 const msgs: MessageItem = {
   comment: "",
@@ -13,12 +14,23 @@ const usrPrf: UserProfile = {
   detail: "",
   email: "",
   title: "",
-  user: {email: ""},
+  user: {email: ""}
+};
+
+const org: Organisation = {
+  address: "",
+  contactNumber: "",
+  facebook: "",
+  twitter: "",
+  website: "",
+  location: "",
+  name: ""
 };
 
 const initialState = {
   userProfile: usrPrf,
-  message: msgs
+  message: msgs,
+  organisation: org
 };
 
 export default (state = initialState, action) => {
@@ -27,6 +39,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         userProfile: action.profile
+    };
+    case SET_USER_ORG:
+      return {
+        ...state,
+        org: action.organisation
     };
     case SET_VIEWED_MSG:
       return {
@@ -53,6 +70,15 @@ export const setViewedMsg = (message: MessageItem) => {
     dispatch({
       type: SET_VIEWED_MSG,
       message
+    });
+  };
+};
+
+export const setOrganisation = (organisation: Organisation) => {
+  return dispatch => {
+    dispatch({
+      type: SET_USER_ORG,
+      organisation
     });
   };
 };

@@ -103,6 +103,7 @@ function ViewMessage(props) {
                 );
             })}
               <Form.Item>
+              <Title level={4}>Leave a comment</Title>
                 <StyledTextArea 
                     rows={4} 
                     value={replyComment} 

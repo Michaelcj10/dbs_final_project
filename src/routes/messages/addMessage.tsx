@@ -15,7 +15,6 @@ const FullBtn = styled(Button)`
 `;
 
 function AddMessage(props: { userProfile: { user: { email: string; }; }; }) {
-
  const [form] = Form.useForm();
  const [formLoading, setLoading] = useState(false);
 
@@ -28,7 +27,8 @@ function AddMessage(props: { userProfile: { user: { email: string; }; }; }) {
     const dataPost = {
       title: values.title,
       comment: values.comment,
-      username: props.userProfile.user.email
+      username: props.userProfile.user.email,
+      email: props.userProfile.user.email
     };
     setLoading(true);
     try {

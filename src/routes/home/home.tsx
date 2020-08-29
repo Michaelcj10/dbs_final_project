@@ -43,6 +43,7 @@ function Home(props) {
   const [messages, setMessages] = useState<MessageItem[]|null>(null);
   const [filter, setFilter] = useState<string>("");
   const colorAvatarPallete = ["#87d068", "#f56a00", "#1890ff"];
+  const email = props.userProfile.user.email;
  
   React.useEffect( () => {
     async function fetchMyAPI() {
@@ -126,7 +127,7 @@ function Home(props) {
                   <List.Item.Meta
                     avatar={<Avatar style={{backgroundColor: i % 3 === 0 ? colorAvatarPallete[2] :  i % 2 === 0 ?  colorAvatarPallete[1] : colorAvatarPallete[0]}} icon={<UserOutlined />} />}
                     title={<StyledSpanHeading>{message.title} <span>{getTimeFrameFromNow(message.Created_date!)}</span></StyledSpanHeading>}
-                    description={message.username}
+                    description={message.username === email ? "You" : message.username}
                     
                   />
                   {message.comment}

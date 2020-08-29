@@ -1,4 +1,4 @@
-import { setUserProfile } from "../../modules/counter";
+import { setUserProfile, setOrganisation } from "../../modules/counter";
 import { push } from "connected-react-router";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -20,8 +20,15 @@ function IsAuthenticated(props) {
         } else {
           props.setUserProfile(response);
           setChecked(true);      
+
+          try {
+            const org = await makeGet(`organisations/${response.userId}`);
+            props.setOrganisation(org);         
+          } catch (error) {
+            // tslint:disable-next-line: no-console
+            console.log(error);  
+          }
         }
-    
       } catch (error) {
         props.changePage("/auth");
       }
@@ -45,7 +52,8 @@ const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       changePage: value => push(value),
-      setUserProfile
+      setUserProfile,
+      setOrganisation
     },
     dispatch
   );

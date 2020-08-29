@@ -25,6 +25,7 @@ const SmallCol = styled(Col)`
 const MainIllustration = styled.img`
     max-width: 60%;
     margin-bottom: 50px;
+    min-height: 300px;
 `;
 
 const SmallIllustration = styled.img`

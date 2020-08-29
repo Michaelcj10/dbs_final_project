@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { push } from "connected-react-router";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { Form, Input, Button, Row, Col, Typography, message, Divider } from "antd";
+import { Form, Input, Button, Row, Col, Typography, message, Divider, Result } from "antd";
 import { useEffect, useState } from "react";
 import { makePost } from "../../api/apiRequest";
 import { setCookie } from "../../services/cookie";
@@ -19,14 +19,16 @@ const SwitchLink = styled(Button)`
   font-weight: bold;
 `;
 
-function Auth(props: { changePage: (arg0: string) => void; }) {
-
+function Auth(props: { userProfile: { user: { email: string; }; }; changePage: (arg0: string) => void; }) {
+  const loggedIn = props.userProfile && props.userProfile.user && props.userProfile.user.email;
   const [hasAccount, setHasAccount] = useState(true);
   const [formLoading, setLoading] = useState(false);
 
   useEffect(
      () => {
-        message.info("Please login or register to continue");
+       if (!loggedIn) {
+          message.info("Please login or register to continue");
+       }
   }, []);
 
   const onFinish = async (values: { id: string; password: string; }) => {
@@ -57,6 +59,7 @@ function Auth(props: { changePage: (arg0: string) => void; }) {
     <div className="layout">
       <Row>
         <Col span={2} lg={8}/>     
+        {!loggedIn ? 
         <Col span={20} lg={8}>
         <Title>{hasAccount ? "Welcome back" : "Register now"}</Title>
         <Form
@@ -108,7 +111,26 @@ function Auth(props: { changePage: (arg0: string) => void; }) {
                 here
              </SwitchLink>
         </Paragraph>
-        </Col>
+        </Col> :  
+         <Col span={20} lg={8}>
+         <Result
+            status="success"
+            title="You are already logged in!"
+            subTitle="Visit your dashboard to start using our features now."
+            extra={[
+              <Button 
+                  type="primary"
+                  onClick={() => {
+                    props.changePage("/dashboard");
+                  }} 
+                  key="console"
+              >
+                  Dashboard
+              </Button>,
+            ]}
+         /> 
+         </Col>
+         }
         <Col span={2} lg={8}/>    
       </Row>
     </div>
