@@ -5,6 +5,7 @@ export interface MessageItem {
   title: string;
   username: string;
   _id?: string;
+  status?: string[];
 }
 
 export interface CommentReply {

@@ -4,10 +4,10 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import IsAuthenticated from "../../components/authentication/isAuthenticated";
 import { Row, Col, Typography, List, Avatar, Space, Divider, Skeleton , Button, Input, Pagination, message, Modal } from "antd";
-import { UserOutlined, MessageOutlined, DeleteOutlined, FlagOutlined } from "@ant-design/icons";
+import { UserOutlined, MessageOutlined, DeleteOutlined, FlagOutlined, WarningOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import { useState } from "react";
-import { makeGet, makeDelete } from "../../api/apiRequest";
+import { makeGet, makeDelete, makePostWithAuth } from "../../api/apiRequest";
 import { MessageItem } from "../../domain/interfaces";
 import { getTimeFrameFromNow } from "../../services/date";
 import { setViewedMsg } from "../../modules/counter";
@@ -48,8 +48,13 @@ const Flag = styled(FlagOutlined)`
   color: #1890ff;
 `;
 
+const Warning = styled(WarningOutlined)`
+  margin-left: 10px;
+  color: #c73737;
+`;
+
 enum MessageActionState {
-  Flagging, Deleting
+  Flagging, Deleting, Unflagging
 }
 
 // tslint:disable-next-line: typedef
@@ -60,7 +65,7 @@ function Home(props) {
   const email = props.userProfile && props.userProfile.user ? props.userProfile.user.email : "";
   const [skipped, setSkipped] = useState<number>(0);
   const [actionInProgress, setInProgress] = useState<boolean>(false);
-  const [idToDelete, setAction] = useState<string>("");
+  const [messageToAction, setAction] = useState<MessageItem|null>(null);
   const [actionState, setActionState] = useState<MessageActionState|null>(null);
 
   const getMessages = async () => {
@@ -104,11 +109,11 @@ function Home(props) {
 
   const modalAction = async (): Promise<void> => {
 
-    const id = idToDelete;
+    const id = messageToAction?._id;
 
     if (actionState === MessageActionState.Deleting) {
       try {
-        const response = await makeDelete("messages", id);
+        const response = await makeDelete("messages", id!);
         // tslint:disable-next-line: no-console
         console.log(response);
         getMessages();
@@ -117,9 +122,28 @@ function Home(props) {
       } catch (error) {
         message.error("Something went wrong");
       }
-    } else { 
-      // tslint:disable-next-line: no-console
-      console.log("BLAH");
+    } else {
+      const newReply = {
+        title: messageToAction!.title,
+        comment: messageToAction!.comment,
+        replies: messageToAction!.replies,
+        userName: messageToAction?.username,
+        status: actionState === MessageActionState.Flagging ? ["Flagged"] : ["Ok"],
+        Created_date: messageToAction?.Created_date
+      };
+
+      try {
+            const response = await makePostWithAuth(`messages/${messageToAction!._id}`, newReply, true);
+            // tslint:disable-next-line: no-console
+            console.log("trying message", response);
+            message.success("Comment flagged!");
+            getMessages();
+            setInProgress(false);
+        } catch (error) {
+            message.error("Something went wrong", error);
+            getMessages();
+            setInProgress(false);
+        }
     }
   };
 
@@ -179,21 +203,24 @@ function Home(props) {
                     description={messageItem.username === email ? "You" : messageItem.username}
                     
                   />
-                  {messageItem.comment}
+                  {messageItem.status![0] === "Flagged" ? `${messageItem.comment} (Flagged!)` : messageItem.comment}
+                  {messageItem.status![0] === "Flagged" ? 
+                  <Warning  /> : null }
                   {messageItem.username === email ? 
                   <Delete 
                       onClick={(e) => {
                           e.stopPropagation();
                           setActionState(MessageActionState.Deleting);
-                          setAction(messageItem!._id!);
+                          setAction(messageItem!);
                           setInProgress(true);
                       }} 
-                  /> : 
+                  /> :  null }
+                  {messageItem.status![0] === "Flagged" || messageItem.username === email ? null :
                   <Flag 
                       onClick={(e) => {
                           e.stopPropagation();
                           setActionState(MessageActionState.Flagging);
-                          setAction(messageItem!._id!);
+                          setAction(messageItem!);
                           setInProgress(true);
                       }} 
                   /> }
@@ -214,7 +241,7 @@ function Home(props) {
            }
           </Col>
           <Modal
-              title={actionState === MessageActionState.Deleting ? "Delete Post" : "Flag Post"}
+              title={actionState === MessageActionState.Deleting ? "Delete Post" : "Flag pos"}
               visible={actionInProgress}
               onOk={modalAction}
               onCancel={() => {
@@ -223,7 +250,7 @@ function Home(props) {
           >
               {actionState === MessageActionState.Deleting ? 
               <p>Are you sure you want to delete this post?</p> : 
-              <p>Are you sure you want to flag this post?</p>}
+              <p>Are you sure you want to flag this post?</p> } 
           </Modal>
         </Row>
       </div>
