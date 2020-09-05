@@ -47,9 +47,9 @@ function AddMessage(props: { userProfile: { user: { email: string; }; }; }) {
    <IsAuthenticated>
      <div className="layout">
       <Row>
-        <Col span={2} lg={8}/>     
-        <Col span={20} lg={8}>
-        <Title>Add new message</Title>
+        <Col span={2} lg={6}/>     
+        <Col span={20} lg={12}>
+        <Title>New message</Title>
         <Form
             form={form}
             layout="vertical"
@@ -82,7 +82,7 @@ function AddMessage(props: { userProfile: { user: { email: string; }; }; }) {
           </Form.Item>
         </Form>
         </Col>
-        <Col span={2} lg={8}/>    
+        <Col span={2} lg={6}/>    
       </Row>
     </div>
    </IsAuthenticated>

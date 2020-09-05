@@ -82,8 +82,8 @@ function ViewMessage(props) {
     <IsAuthenticated>
         <div className="layout">
         <Row>
-            <Col span={2} lg={8}/>     
-            <Col span={20} lg={8}>
+            <Col span={2} lg={6}/>     
+            <Col span={20} lg={12}>
             <Title>{props.message.title}</Title>
             <StyledInfo>
                 {getTimeFrameFromNow(props.message.Created_date)}
@@ -116,7 +116,7 @@ function ViewMessage(props) {
                 </Button>
               </Form.Item>
             </Col>
-            <Col span={2} lg={8}/>    
+            <Col span={2} lg={6}/>    
         </Row>
         </div>
     </IsAuthenticated>
