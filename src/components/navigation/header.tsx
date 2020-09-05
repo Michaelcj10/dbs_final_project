@@ -6,9 +6,10 @@ import { push } from "connected-react-router";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { deleteCookie, deleteSession } from "../../services/cookie";
-import { HomeOutlined, MailOutlined, SettingOutlined } from "@ant-design/icons";
+import { MailOutlined, SettingOutlined } from "@ant-design/icons";
 import SubMenu from "antd/lib/menu/SubMenu";
 import { useState } from "react";
+import logo from "../../images/logo.png";
 
 const HeaderStyle = styled.div`
     border: 1px solid rgb(235, 237, 240);
@@ -17,11 +18,17 @@ const HeaderStyle = styled.div`
 const StyledSpanHeading = styled(Button)`
   font-weight:bold;
   padding: 0px;
+  color: #272727;
 `;
 
 const SwitchLink = styled(Button)`
   padding: 0px;
   color: rgba(0, 0, 0, 0.65);
+`;
+
+const Logo = styled.img`
+  width: 30px;
+  cursor:pointer;
 `;
 
 // tslint:disable-next-line: typedef
@@ -34,24 +41,30 @@ function Header(props) {
   };
   
   return (
-    <HeaderStyle>
+       <HeaderStyle>
         <PageHeader
-            onBack={() => {
-              props.changePage("/");
-            }}
-            backIcon={<HomeOutlined />}
             className="site-page-header"
-            title="Safe Hub"
-            subTitle={props.userProfile && props.userProfile.email ? "" : "Dashboard"}
-            extra={loggedIn ?  [
-              <StyledSpanHeading 
-                  key="1"
-                  type="link" 
+            title={
+              <Logo 
+                  src={logo} 
+                  alt="site logo" 
                   onClick={() => {
-                    props.changePage("/profile");
-                  }}
-              >{`Welcome, ${props.userProfile.user.email}`}
-              </StyledSpanHeading>
+                     props.changePage("/");
+              }} 
+              />}
+            subTitle={
+              loggedIn ? 
+                <StyledSpanHeading 
+                    key="1"
+                    type="link" 
+                    onClick={() => {
+                      props.changePage("/profile");
+                    }}
+                >{`${props.userProfile.user.email}`}
+                </StyledSpanHeading> : null
+            }
+            extra={loggedIn ?  [
+  
             ] : [
               <StyledSpanHeading 
                   key="3"
@@ -64,8 +77,9 @@ function Header(props) {
             ]}
         />
         {loggedIn &&
-         <Menu onClick={handleClick} selectedKeys={[current]} mode="horizontal">
-          <Menu.Item key="mail"  icon={<MailOutlined />}>
+        <React.Fragment>
+               <Menu onClick={handleClick} selectedKeys={[current]} mode="horizontal">
+          <Menu.Item key="mail" icon={<MailOutlined />}>
               <SwitchLink 
                   type="link"
                   onClick={() => {
@@ -112,7 +126,9 @@ function Header(props) {
             </Menu.Item>
             </Menu.ItemGroup>
           </SubMenu>
-      </Menu>}
+      </Menu>
+       </React.Fragment>
+      }
     </HeaderStyle>
   );
 }

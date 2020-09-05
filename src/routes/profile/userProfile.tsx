@@ -9,6 +9,15 @@ import { Organisation } from "../../domain/interfaces";
 import { makeGet, makePostWithAuth } from "../../api/apiRequest";
 import { UserOutlined, FacebookOutlined , TwitterOutlined, ChromeOutlined } from "@ant-design/icons";
 
+const basicOrg: Organisation = {
+  facebook: "",
+  twitter: "",
+  website: "",
+  contactNumber: "",
+  address: "",
+  location: "",
+  name: ""
+};
 const { Title } = Typography;
 
 // tslint:disable-next-line: typedef
@@ -26,6 +35,7 @@ function UserProfile(props) {
           const response = await makeGet(`organisations/${id}`);
           if (!response.created) {
             setOrgRegistered(false);
+            setProfile(basicOrg);
           } else {
             // tslint:disable-next-line: no-console
             console.log(response.found[0]);
@@ -33,6 +43,7 @@ function UserProfile(props) {
           }
         } catch (error) {
           message.error("Something went wrong , try again");
+          setProfile(basicOrg);
         }
       }
   

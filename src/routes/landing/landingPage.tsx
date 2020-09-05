@@ -43,7 +43,7 @@ const StyledTitle = styled(Title)`
 `;
 
 const CustomTitle = styled(Title)`
-    background: #1de9b6;
+    background: #1890ff;
     border-radius: 0px 20px 5px 0px;
     font-weight: bold;
     padding: 0 15px;

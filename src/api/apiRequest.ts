@@ -22,6 +22,24 @@ export const makeGet = async (url: string) => {
       }).then(res => res.json());
 };
 
+export const makeDelete = async (url: string, id: string) => {
+
+  const cookieAuth = getCookie("token");
+
+  let fetchData = {
+      method: "DELETE",
+      withCredentials: true,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "Authorization" : cookieAuth
+      }
+    };
+
+  return await fetchReq(`${apiUrl}${url}/${id}`, fetchData, {
+    }).then(res => res.json());
+};
+
 export const makePost = async (url: string, postData ) => {
     let fetchData = {
           method: "POST",
