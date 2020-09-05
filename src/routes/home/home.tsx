@@ -136,7 +136,7 @@ function Home(props) {
             const response = await makePostWithAuth(`messages/${messageToAction!._id}`, newReply, true);
             // tslint:disable-next-line: no-console
             console.log("trying message", response);
-            message.success("Comment flagged!");
+            message.warning("Comment flagged!");
             getMessages();
             setInProgress(false);
         } catch (error) {
