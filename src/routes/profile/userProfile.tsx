@@ -75,7 +75,6 @@ function UserProfile(props) {
         <Col span={2} lg={6}/>     
         <Col span={20} lg={12}>
         <Title>Profile</Title>
-
         {!orgRegistered ? <Alert message="Please register your organisation" type="warning" /> : null}
         <Card size="small">
         {profile === null ? 

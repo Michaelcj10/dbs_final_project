@@ -42,7 +42,7 @@ const Flex = styled.div`
 function Home(props) {
   const [messages, setMessages] = useState<MessageItem[]|null>(null);
   const [filter, setFilter] = useState<string>("");
-  const colorAvatarPallete = ["#87d068", "#f56a00", "#1890ff"];
+  const colorAvatarPallete = ["#1de9b6", "#1890ff", "#d9d9d9"];
   const email = props.userProfile.user.email;
  
   React.useEffect( () => {

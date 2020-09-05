@@ -23,9 +23,9 @@ const SmallCol = styled(Col)`
 `;
 
 const MainIllustration = styled.img`
-    max-width: 60%;
+    max-width: 90%;
     margin-bottom: 50px;
-    min-height: 300px;
+    width: 550px;
 `;
 
 const SmallIllustration = styled.img`
@@ -43,8 +43,10 @@ const StyledTitle = styled(Title)`
 `;
 
 const CustomTitle = styled(Title)`
-    background: #1890ff;
+    background: #1de9b6;
     border-radius: 0px 20px 5px 0px;
+    font-weight: bold;
+    padding: 0 15px;
 `;
 
 function Landing(props: { changePage: (arg0: string) => void; }) {
