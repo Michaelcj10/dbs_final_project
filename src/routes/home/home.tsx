@@ -3,10 +3,10 @@ import { push } from "connected-react-router";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import IsAuthenticated from "../../components/authentication/isAuthenticated";
-import { Row, Col, Typography, List, Avatar, Space, Divider, Skeleton , Button, Input, Pagination, message, Modal } from "antd";
-import { UserOutlined, MessageOutlined, DeleteOutlined, FlagOutlined, WarningOutlined } from "@ant-design/icons";
+import { Row, Col, Typography, List, Avatar, Space, Divider, Skeleton , Button, Input, Pagination, message, Modal, Tag } from "antd";
+import { UserOutlined, MessageOutlined, DeleteOutlined, FlagOutlined } from "@ant-design/icons";
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, Fragment } from "react";
 import { makeGet, makeDelete, makePostWithAuth } from "../../api/apiRequest";
 import { MessageItem } from "../../domain/interfaces";
 import { getTimeFrameFromNow } from "../../services/date";
@@ -48,11 +48,6 @@ const Flag = styled(FlagOutlined)`
   color: #1890ff;
 `;
 
-const Warning = styled(WarningOutlined)`
-  margin-left: 10px;
-  color: #c73737;
-`;
-
 enum MessageActionState {
   Flagging, Deleting, Unflagging
 }
@@ -61,7 +56,7 @@ enum MessageActionState {
 function Home(props) {
   const [messages, setMessages] = useState<MessageItem[]|null>(null);
   const [filter, setFilter] = useState<string>("");
-  const colorAvatarPallete = ["#1de9b6", "#1890ff", "#d9d9d9"];
+  const colorAvatarPallete = ["#1de9b6", "#1890ff"];
   const email = props.userProfile && props.userProfile.user ? props.userProfile.user.email : "";
   const [skipped, setSkipped] = useState<number>(0);
   const [actionInProgress, setInProgress] = useState<boolean>(false);
@@ -93,6 +88,17 @@ function Home(props) {
   );
 
   const getFiltered = (): MessageItem[] => {
+    const notFlagged = messages ? messages.filter(x => x.status![0] !== "Flagged") : [];
+    let flaggedYours: MessageItem[] = [];
+
+    try {
+      flaggedYours = messages ? messages.filter(x => x.status![0] === "Flagged" && x.username === props.userProfile.user.email) : [];
+    } catch (error) {
+      flaggedYours = [];
+    }
+
+    // tslint:disable-next-line: no-console
+    console.log(notFlagged, flaggedYours);
     let filtered: MessageItem[] = messages ? messages?.slice(skipped, skipped + 10) : [];
 
     if (filter !== "") {
@@ -105,6 +111,23 @@ function Home(props) {
      }
 
     return filtered;
+  };
+
+  const setAsNotification = async (user: string, msg: string) => {
+    const dataPost = {
+      "notifications": [{"notification": msg, "userId": user}],
+      "userId": user
+    };
+
+    try {
+      const response = await makePostWithAuth("notifications", dataPost);
+      if (response.errors) {
+        message.error("Invalid details, try again");    
+
+      }
+    } catch (e) {
+      message.error("Invalid details, try again");
+    }
   };
 
   const modalAction = async (): Promise<void> => {
@@ -123,6 +146,7 @@ function Home(props) {
         message.error("Something went wrong");
       }
     } else {
+
       const newReply = {
         title: messageToAction!.title,
         comment: messageToAction!.comment,
@@ -135,10 +159,15 @@ function Home(props) {
       try {
             const response = await makePostWithAuth(`messages/${messageToAction!._id}`, newReply, true);
             // tslint:disable-next-line: no-console
-            console.log("trying message", response);
+            console.log(response);
             message.warning("Comment flagged!");
             getMessages();
             setInProgress(false);
+
+            if (actionState === MessageActionState.Flagging) {
+               setAsNotification(messageToAction?.username ? messageToAction.username : "" , "Message has been flagged");
+            }
+
         } catch (error) {
             message.error("Something went wrong", error);
             getMessages();
@@ -157,7 +186,7 @@ function Home(props) {
             <Divider orientation="left" plain={true} >
               {!messages ? <Skeleton.Input style={{ width: 100, height: "10px"}} active={true} /> :             
               <div>
-                {`Messages total (${messages?.length ? messages.length : "0"})`}
+                {`Messages total (${getFiltered()?.length ? getFiltered().length : "0"})`}
               </div>}
             </Divider>
                 <Flex>
@@ -198,14 +227,12 @@ function Home(props) {
                 ]}
                 >
                   <List.Item.Meta
-                    avatar={<Avatar style={{backgroundColor: i % 3 === 0 ? colorAvatarPallete[2] :  i % 2 === 0 ?  colorAvatarPallete[1] : colorAvatarPallete[0]}} icon={<UserOutlined />} />}
+                    avatar={<Avatar style={{backgroundColor: i % 2 === 0 ? colorAvatarPallete[0] :  colorAvatarPallete[1]}} icon={<UserOutlined />} />}
                     title={<StyledSpanHeading>{messageItem.title} <span>{getTimeFrameFromNow(messageItem.Created_date!)}</span></StyledSpanHeading>}
                     description={messageItem.username === email ? "You" : messageItem.username}
                     
                   />
-                  {messageItem.status![0] === "Flagged" ? `${messageItem.comment} (Flagged!)` : messageItem.comment}
-                  {messageItem.status![0] === "Flagged" ? 
-                  <Warning  /> : null }
+                  {messageItem.status![0] === "Flagged" ? <Fragment><Tag color="orange">Flagged</Tag> </Fragment>  : messageItem.comment}
                   {messageItem.username === email ? 
                   <Delete 
                       onClick={(e) => {

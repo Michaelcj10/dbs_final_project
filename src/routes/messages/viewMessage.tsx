@@ -31,6 +31,9 @@ const StyledTextArea = styled(TextArea)`
 // tslint:disable-next-line: typedef
 function ViewMessage(props) {
     const [replyComment, setComment] = useState<string>("");
+    const email = props.userProfile && props.userProfile.user ? props.userProfile.user.email : "";
+    // tslint:disable-next-line: no-console
+    console.log(props);
 
     const getUpdatedMessage = async () => {
 
@@ -95,7 +98,7 @@ function ViewMessage(props) {
                 return (
                    <Comment
                         key={`${comment._id}`}
-                        author={comment.username}
+                        author={comment.username === email ? "You" : comment.username}
                         avatar={<Avatar style={{backgroundColor: "f56a00" }} icon={<UserOutlined />} />}
                         content={comment.reply}
                         datetime={getTimeFrameFromNow(comment.Created_date)}

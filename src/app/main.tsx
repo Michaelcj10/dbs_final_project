@@ -21,6 +21,8 @@ const ViewMessage = React.lazy(() => import("../routes/messages/viewMessage"));
 const Auth = React.lazy(() => import("../routes/auth/auth"));
 const Privacy = React.lazy(() => import("../routes/privacyPolicy/policy"));
 const UserProfile = React.lazy(() => import("../routes/profile/userProfile"));
+const Organisations = React.lazy(() => import("../routes/orgs/organisations"));
+const ViewOrganisation = React.lazy(() => import("../routes/orgs/viewOrganisation"));
 
 function App() {
 
@@ -37,6 +39,8 @@ function App() {
           <Route exact={true} path="/auth" component={Auth} />
           <Route exact={true} path="/privacy-policy" component={Privacy} />
           <Route exact={true} path="/profile" component={UserProfile} />
+          <Route exact={true} path="/organisations/:id" component={ViewOrganisation} />
+          <Route exact={true} path="/organisations" component={Organisations} />
           </ConnectedRouter>
           <GlobalStyle />
         </PersistGate>

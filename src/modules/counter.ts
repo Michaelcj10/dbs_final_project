@@ -1,6 +1,7 @@
 const SET_USER_PROFILE = "SET_USER_PROFILE";
 const SET_VIEWED_MSG = "SET_VIEWED_MSG";
 const SET_USER_ORG = "SET_USER_ORG";
+const SET_VIEWED_ORG = "SET_VIEWED_ORG";
 import { MessageItem, UserProfile, Organisation } from "../domain/interfaces";
 
 const msgs: MessageItem = {
@@ -30,7 +31,8 @@ const org: Organisation = {
 const initialState = {
   userProfile: usrPrf,
   message: msgs,
-  organisation: org
+  organisation: org,
+  viewedOrganisation: org
 };
 
 export default (state = initialState, action) => {
@@ -44,6 +46,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         org: action.organisation
+    };
+    case SET_VIEWED_ORG:
+      return {
+        ...state,
+        viewedOrganisation: action.organisation
     };
     case SET_VIEWED_MSG:
       return {
@@ -78,6 +85,15 @@ export const setOrganisation = (organisation: Organisation) => {
   return dispatch => {
     dispatch({
       type: SET_USER_ORG,
+      organisation
+    });
+  };
+};
+
+export const setViewedOrganisation = (organisation: Organisation) => {
+  return dispatch => {
+    dispatch({
+      type: SET_VIEWED_ORG,
       organisation
     });
   };

@@ -1,4 +1,4 @@
-import { PageHeader, Button, Menu  } from "antd";
+import { PageHeader, Button, Menu, Badge, Avatar  } from "antd";
 import { setUserProfile } from "../../modules/counter";
 import * as React from "react";
 import styled from "styled-components";
@@ -6,10 +6,11 @@ import { push } from "connected-react-router";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { deleteCookie, deleteSession } from "../../services/cookie";
-import { MailOutlined, SettingOutlined } from "@ant-design/icons";
+import { MailOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons";
 import SubMenu from "antd/lib/menu/SubMenu";
 import { useState } from "react";
 import logo from "../../images/logo.png";
+import { makeGet } from "../../api/apiRequest";
 
 const HeaderStyle = styled.div`
     border: 1px solid rgb(235, 237, 240);
@@ -27,7 +28,7 @@ const SwitchLink = styled(Button)`
 `;
 
 const Logo = styled.img`
-  width: 30px;
+  width: 70px;
   cursor:pointer;
 `;
 
@@ -35,10 +36,29 @@ const Logo = styled.img`
 function Header(props) {
   const loggedIn = props.userProfile && props.userProfile.user && props.userProfile.user.email;
   const [current, setCurrent] = useState<string>("");
+  const [notifications, setNotifications] = useState<number>(0);
 
   const handleClick = e => {
     setCurrent(e.key);
   };
+
+  const getNotifications = async () => {
+    try {
+      const response = await makeGet("notifications");
+      const mine = response.filter(x => x.notification.userId === props.userProfile!.user!.email);
+      setNotifications(mine.length);
+    } catch (error) {
+      setNotifications(0);
+    }
+  };
+
+  React.useEffect( () => {
+    async function fetchMyAPI() {
+        await getNotifications();
+    }
+
+    fetchMyAPI();
+  },               [] );
   
   return (
        <HeaderStyle>
@@ -64,7 +84,9 @@ function Header(props) {
                 </StyledSpanHeading> : null
             }
             extra={loggedIn ?  [
-  
+              <Badge count={notifications} key="msg-count">
+                <Avatar shape="square" icon={<UserOutlined />} />
+              </Badge>
             ] : [
               <StyledSpanHeading 
                   key="3"
@@ -109,6 +131,16 @@ function Header(props) {
                   }}
               >
                 Profile
+              </SwitchLink>
+            </Menu.Item>
+            <Menu.Item>
+              <SwitchLink 
+                  type="link"
+                  onClick={() => {
+                    props.changePage("/organisations");
+                  }}
+              >
+                Organisations
               </SwitchLink>
             </Menu.Item>
             <Menu.Item>
