@@ -32,8 +32,7 @@ const Logo = styled.img`
   cursor:pointer;
 `;
 
-// tslint:disable-next-line: typedef
-function Header(props) {
+function SiteHeader(props: { userProfile: { user: { email: string; }; }; changePage: (arg0: string) => void; setUserProfile: (arg0: {}) => void; }) {
   const loggedIn = props.userProfile && props.userProfile.user && props.userProfile.user.email;
   const [current, setCurrent] = useState<string>("");
   const [notifications, setNotifications] = useState<number>(0);
@@ -45,7 +44,7 @@ function Header(props) {
   const getNotifications = async () => {
     try {
       const response = await makeGet("notifications");
-      const mine = response.filter(x => x.notification.userId === props.userProfile!.user!.email);
+      const mine = response.filter(x => x.username === props.userProfile!.user!.email);
       setNotifications(mine.length);
     } catch (error) {
       setNotifications(0);
@@ -181,4 +180,4 @@ const mapDispatchToProps = dispatch =>
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)((Header));
+)((SiteHeader));

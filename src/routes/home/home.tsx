@@ -232,7 +232,7 @@ function Home(props) {
                     description={messageItem.username === email ? "You" : messageItem.username}
                     
                   />
-                  {messageItem.status![0] === "Flagged" ? <Fragment><Tag color="orange">Flagged</Tag> </Fragment>  : messageItem.comment}
+                  {messageItem.status![0] === "Flagged" ? <Fragment><Tag color="blue">Flagged</Tag> </Fragment>  : messageItem.comment}
                   {messageItem.username === email ? 
                   <Delete 
                       onClick={(e) => {
