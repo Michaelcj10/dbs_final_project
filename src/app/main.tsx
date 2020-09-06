@@ -39,7 +39,7 @@ function App() {
           <Route exact={true} path="/auth" component={Auth} />
           <Route exact={true} path="/privacy-policy" component={Privacy} />
           <Route exact={true} path="/profile" component={UserProfile} />
-          <Route exact={true} path="/organisations/:id" component={ViewOrganisation} />
+          <Route exact={true} path="/view-organisation" component={ViewOrganisation} />
           <Route exact={true} path="/organisations" component={Organisations} />
           </ConnectedRouter>
           <GlobalStyle />

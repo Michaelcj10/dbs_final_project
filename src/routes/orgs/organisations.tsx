@@ -58,7 +58,7 @@ function Organisations(props: { userProfile: { userId: string; }; setViewedOrgan
                         style={{cursor: "pointer"}}
                         onClick={() => {
                             props.setViewedOrganisation(item);
-                            props.changePage(`/organisations/${item.name.toLowerCase()}`);
+                            props.changePage(`/view-organisation`);
                         }}
                     >
                         <List.Item.Meta
