@@ -12,23 +12,27 @@ export const getTimeFrameFromNow = (unformatted: Date) => {
     const now = new Date();
 
     if (now.getFullYear() > d.getFullYear()) {
-        return `${now.getFullYear() - d.getFullYear()} years ago` ;
+        return `${now.getFullYear() - d.getFullYear()} years ago`;
     }
 
     if (now.getFullYear() === d.getFullYear() && now.getMonth() !== d.getMonth()) {
-        return `${now.getMonth() - d.getMonth()} months ago` ;
+        const span = now.getMonth() - d.getMonth();
+        return `${span} ${span === 1 ? "month" : "months"} ago`;
     }
 
     if (now.getMonth() === d.getMonth() && now.getDate() !== d.getDate()) {
-        return `${now.getDate() - d.getDate()} days ago` ;
+        const span = now.getDate() - d.getDate();
+        return `${span} ${span === 1 ? "day" : "days"} ago`;
     }
 
     if (now.getDay() === d.getDay() && now.getHours() !== d.getHours()) {
-        return `${now.getHours() - d.getHours()} hours ago` ;
+        const span = now.getHours() - d.getHours();
+        return `${span} ${span === 1 ? "hour" : "hours"} ago`;
     }
 
     if (now.getHours() === d.getHours() && now.getMinutes() !== d.getMinutes()) {
-        return `${now.getMinutes() - d.getMinutes()} minutes ago` ;
+        const span = now.getMinutes() - d.getMinutes();
+        return `${span} ${span === 1 ? "minute" : "minutes"} ago`;
     }
 
     return "Just now";

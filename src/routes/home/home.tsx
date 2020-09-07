@@ -3,17 +3,24 @@ import { push } from "connected-react-router";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import IsAuthenticated from "../../components/authentication/isAuthenticated";
-import { Row, Col, Typography, List, Avatar,  Divider, Skeleton , Button, Input, Pagination, message, Modal, Checkbox } from "antd";
-import { UserOutlined, FlagOutlined, WarningOutlined } from "@ant-design/icons";
+import { Row, Col, Typography, List, Avatar,  Divider, Skeleton , Button, Input, Pagination, message, Modal, Checkbox, Card, Timeline } from "antd";
+import { UserOutlined, FlagOutlined, WarningOutlined, SmileOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import { useState } from "react";
 import { makeGet, makeDelete, makePostWithAuth } from "../../api/apiRequest";
 import { MessageItem } from "../../domain/interfaces";
 import { getTimeFrameFromNow } from "../../services/date";
 import { setViewedMsg } from "../../modules/counter";
+import logo from "../../images/logo.png";
 
-const { Title } = Typography;
+const { Title, Paragraph } = Typography;
 const { Search } = Input;
+
+const Logo = styled.img`
+  width: 70px;
+  cursor:pointer;
+  margin-bottom: 25px;
+`;
 
 const StyledSpanHeading = styled.span`
   font-weight:bold;
@@ -33,9 +40,14 @@ const SearchInput = styled(Search)`
   margin-bottom: 25px;
 `;
 
+const StyledCard = styled(Card)`
+  margin-bottom: 25px;
+`;
+
 const Flex = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
 `;
 
 const Flag = styled(FlagOutlined)`
@@ -43,12 +55,20 @@ const Flag = styled(FlagOutlined)`
   color: #1890ff;
 `;
 
+const SwitchLink = styled(Button)`
+  padding: 0px;
+  font-weight: bold;
+`;
+
+const WelcomeTitle = styled(Title)`
+  font-size: 14px;
+`;
+
 enum MessageActionState {
   Flagging, Deleting, Unflagging
 }
 
-// tslint:disable-next-line: typedef
-function Home(props) {
+function Home(props: { userProfile: { user: { email: string; }; }; changePage: (arg0: string) => void; setViewedMsg: (arg0: MessageItem) => void; }) {
   const [messages, setMessages] = useState<MessageItem[]|null>(null);
   const [filter, setFilter] = useState<string>("");
   const colorAvatarPallete = ["#1de9b6", "#1890ff"];
@@ -56,6 +76,7 @@ function Home(props) {
   const [skipped, setSkipped] = useState<number>(0);
   const [actionInProgress, setInProgress] = useState<boolean>(false);
   const [showFlagged, setShowFlagged] = useState<boolean>(false);
+  const [showLearnMore, setShowLearnMore] = useState<boolean>(false);
   const [messageToAction, setAction] = useState<MessageItem|null>(null);
   const [actionState, setActionState] = useState<MessageActionState|null>(null);
 
@@ -162,6 +183,21 @@ function Home(props) {
         <Row>
           <Col span={2} lg={6}/>     
           <Col span={20} lg={12}>
+            <StyledCard>
+              <Flex>
+              <WelcomeTitle style={{fontSize: "14px", marginBottom: "0px"}}>
+                <SmileOutlined style={{marginRight: "10px"}} />
+                 Welcome to Safe Hub!
+              </WelcomeTitle>
+              <SwitchLink 
+                  onClick={() => {
+                    setShowLearnMore(!showLearnMore);
+                  }} 
+                  type="link"
+              >Learn more
+              </SwitchLink>
+              </Flex>
+            </StyledCard>
             <Title>Message center</Title>
             <Divider orientation="left" plain={true} >
               {!messages ? <Skeleton.Input style={{ width: 100, height: "10px"}} active={true} /> :             
@@ -213,7 +249,7 @@ function Home(props) {
                    }}
                    actions={[
                         messageItem.username === email ? 
-                        <Button 
+                        <SwitchLink 
                           type="link"
                           key="list-del"  
                           danger={true}
@@ -224,9 +260,9 @@ function Home(props) {
                           setInProgress(true);
                           }} 
                         >
-                  delete</Button> : 
+                     del</SwitchLink> : 
                       messageItem.status![0] === "Flagged" ? <WarningOutlined style={{color: "red"}} /> :
-                        <Button
+                        <SwitchLink
                           type="link"
                           key="list-flag"  
                           onClick={(e) => {
@@ -236,13 +272,12 @@ function Home(props) {
                             setInProgress(true);
                           }} 
                         >
-                  flag  </Button> , <Button type="link" key="list-view">view</Button>]}
+                  flag  </SwitchLink> , <SwitchLink type="link" key="list-view">view</SwitchLink>]}
                 >
                   <List.Item.Meta
                     avatar={<Avatar style={{backgroundColor: i % 2 === 0 ? colorAvatarPallete[0] :  colorAvatarPallete[1]}} icon={<UserOutlined />} />}
-                    title={<StyledSpanHeading>{`${messageItem.title} `} <span>{getTimeFrameFromNow(messageItem.Created_date!)}</span></StyledSpanHeading>}
-                    description={messageItem.username === email ? "You" : messageItem.username}
-                    
+                    title={<StyledSpanHeading>{`${messageItem.title} (${messageItem.replies.length} ${messageItem.replies.length === 1 ? "reply" : "replies"})`}</StyledSpanHeading>}
+                    description={`${messageItem.username === email ? "You" : messageItem.username} ${getTimeFrameFromNow(messageItem.Created_date!)}`}
                   />
                   {messageItem.status![0] === "Flagged" || messageItem.username === email ? null :
                   <Flag 
@@ -253,6 +288,7 @@ function Home(props) {
                           setInProgress(true);
                       }} 
                   /> }
+                  
                 </List.Item>
               )}
             />
@@ -273,6 +309,7 @@ function Home(props) {
               title={actionState === MessageActionState.Deleting ? "Delete Post" : "Flag pos"}
               visible={actionInProgress}
               onOk={modalAction}
+              okText="Delete"
               onCancel={() => {
                  setInProgress(false);
               }}
@@ -280,6 +317,29 @@ function Home(props) {
               {actionState === MessageActionState.Deleting ? 
               <p>Are you sure you want to delete this post?</p> : 
               <p>Are you sure you want to flag this post?</p> } 
+          </Modal>
+          <Modal
+              title=""
+              visible={showLearnMore}
+              okText="Profile"
+              onOk={() => {
+                props.changePage("/profile");
+             }}
+              onCancel={() => {
+                setShowLearnMore(false);
+             }}
+          >
+              <Logo src={logo} alt="logo" />
+              <Title level={4}>Welcome to Safe Hub</Title>
+              <Paragraph>
+                Good to have you aboard. Here is some useful info to get you up and running.
+              </Paragraph>
+              <Timeline>
+                <Timeline.Item>Fill in your profile</Timeline.Item>
+                <Timeline.Item>Send some updates about your service to others</Timeline.Item>
+                <Timeline.Item>Collaborate between organisations</Timeline.Item>
+                <Timeline.Item>Make a difference!</Timeline.Item>
+              </Timeline>
           </Modal>
         </Row>
       </div>
