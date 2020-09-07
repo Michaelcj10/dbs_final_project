@@ -4,7 +4,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import IsAuthenticated from "../../components/authentication/isAuthenticated";
 import { Row, Col, Typography, List, Avatar,  Divider, Skeleton , Button, Input, Pagination, message, Modal, Checkbox, Card, Timeline } from "antd";
-import { UserOutlined, FlagOutlined, WarningOutlined, SmileOutlined } from "@ant-design/icons";
+import { UserOutlined, WarningOutlined, SmileOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import { useState } from "react";
 import { makeGet, makeDelete, makePostWithAuth } from "../../api/apiRequest";
@@ -48,11 +48,6 @@ const Flex = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-`;
-
-const Flag = styled(FlagOutlined)`
-  margin-left: 10px;
-  color: #1890ff;
 `;
 
 const SwitchLink = styled(Button)`
@@ -230,7 +225,7 @@ function Home(props: { userProfile: { user: { email: string; }; }; changePage: (
                       onChange={() => {
                         setShowFlagged(!showFlagged);
                       }}
-                >Show Flagged
+                >Show Flagged (Hidden by default)
                 </Checkbox>
                 </Flex>
             {messages === null  ? <div> {[1, 2, 3, 4].map( (x, y) => {
@@ -264,7 +259,8 @@ function Home(props: { userProfile: { user: { email: string; }; }; changePage: (
                       messageItem.status![0] === "Flagged" ? <WarningOutlined style={{color: "red"}} /> :
                         <SwitchLink
                           type="link"
-                          key="list-flag"  
+                          key="list-flag"
+                          danger={true}  
                           onClick={(e) => {
                             e.stopPropagation();
                             setActionState(MessageActionState.Flagging);
@@ -279,16 +275,6 @@ function Home(props: { userProfile: { user: { email: string; }; }; changePage: (
                     title={<StyledSpanHeading>{`${messageItem.title} (${messageItem.replies.length} ${messageItem.replies.length === 1 ? "reply" : "replies"})`}</StyledSpanHeading>}
                     description={`${messageItem.username === email ? "You" : messageItem.username} ${getTimeFrameFromNow(messageItem.Created_date!)}`}
                   />
-                  {messageItem.status![0] === "Flagged" || messageItem.username === email ? null :
-                  <Flag 
-                      onClick={(e) => {
-                          e.stopPropagation();
-                          setActionState(MessageActionState.Flagging);
-                          setAction(messageItem!);
-                          setInProgress(true);
-                      }} 
-                  /> }
-                  
                 </List.Item>
               )}
             />
@@ -309,7 +295,7 @@ function Home(props: { userProfile: { user: { email: string; }; }; changePage: (
               title={actionState === MessageActionState.Deleting ? "Delete Post" : "Flag pos"}
               visible={actionInProgress}
               onOk={modalAction}
-              okText="Delete"
+              okText={actionState === MessageActionState.Deleting ? "Delete" : "Flag"}
               onCancel={() => {
                  setInProgress(false);
               }}
