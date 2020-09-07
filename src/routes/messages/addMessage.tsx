@@ -7,11 +7,18 @@ import { Form, Input, Button, Row, Col, Typography, message } from "antd";
 import { useState } from "react";
 import { makePostWithAuth } from "../../api/apiRequest";
 import IsAuthenticated from "../../components/authentication/isAuthenticated";
+import { WarningOutlined } from "@ant-design/icons";
 
-const { Title } = Typography;
+const { Title, Paragraph } = Typography;
 
 const FullBtn = styled(Button)`
   width: 100%;
+`;
+
+const AlertTerms = styled.div`
+  display: flex;
+  align-items:center;
+  margin-bottom: 25px;
 `;
 
 function AddMessage(props: { userProfile: { user: { email: string; }; }; }) {
@@ -47,9 +54,12 @@ function AddMessage(props: { userProfile: { user: { email: string; }; }; }) {
    <IsAuthenticated>
      <div className="layout">
       <Row>
-        <Col span={2} lg={6}/>     
-        <Col span={20} lg={12}>
+        <Col span={2} lg={8}/>     
+        <Col span={20} lg={10}>
         <Title>New message</Title>
+        <AlertTerms>
+          <WarningOutlined /> <Paragraph style={{margin: "0px 10px"}}>Do not use names, numbers etc that can identify a client.</Paragraph>
+        </AlertTerms>
         <Form
             form={form}
             layout="vertical"
@@ -82,7 +92,7 @@ function AddMessage(props: { userProfile: { user: { email: string; }; }; }) {
           </Form.Item>
         </Form>
         </Col>
-        <Col span={2} lg={6}/>    
+        <Col span={2} lg={8}/>    
       </Row>
     </div>
    </IsAuthenticated>

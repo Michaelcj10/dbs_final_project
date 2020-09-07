@@ -89,8 +89,8 @@ function ViewMessage(props) {
     <IsAuthenticated>
         <div className="layout">
         <Row>
-            <Col span={2} lg={6}/>     
-            <Col span={20} lg={12}>
+            <Col span={2} lg={8}/>     
+            <Col span={20} lg={10}>
             {props.message.status[0] === "Flagged" &&
             <StyledAlert message="This message has been flagged as inappropriate and is under review" type="error" />}
             <Title>{props.message.title}</Title>
@@ -125,7 +125,7 @@ function ViewMessage(props) {
                 </Button>
               </Form.Item>
             </Col>
-            <Col span={2} lg={6}/>    
+            <Col span={2} lg={8}/>    
         </Row>
         </div>
     </IsAuthenticated>
