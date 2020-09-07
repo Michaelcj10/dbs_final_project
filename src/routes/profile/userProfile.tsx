@@ -2,12 +2,12 @@ import * as React from "react";
 import { push } from "connected-react-router";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import {  Row, Col, Typography, Card, Skeleton, Input, Button, message, Alert , Form , Descriptions, Badge } from "antd";
+import {  Row, Col, Typography, Card, Skeleton, Input, Button, message, Alert , Form , Descriptions } from "antd";
 import IsAuthenticated from "../../components/authentication/isAuthenticated";
 import { useState, useEffect, Fragment } from "react";
 import { Organisation } from "../../domain/interfaces";
 import { makeGet, makePostWithAuth } from "../../api/apiRequest";
-import { UserOutlined, FacebookOutlined , TwitterOutlined, ChromeOutlined } from "@ant-design/icons";
+import { UserOutlined, FacebookOutlined , TwitterOutlined, ChromeOutlined, CheckCircleTwoTone } from "@ant-design/icons";
 import styled from "styled-components";
 
 const basicOrg: Organisation = {
@@ -29,8 +29,7 @@ const StyledTitle = styled(Title)`
     margin-top: 25px;
 `;
 
-// tslint:disable-next-line: typedef
-function UserProfile(props) {
+function UserProfile(props: { userProfile: { user: { email: string; }; userId: string; }; }) {
     const email = props.userProfile.user.email;
     const id = props.userProfile.userId;
     const [profile, setProfile] = useState<Organisation|null>(null);
@@ -46,8 +45,6 @@ function UserProfile(props) {
             setOrgRegistered(false);
             setProfile(basicOrg);
           } else {
-            // tslint:disable-next-line: no-console
-            console.log(response.found[0]);
             setProfile(response.found[0]);
           }
         } catch (error) {
@@ -88,6 +85,10 @@ function UserProfile(props) {
       }
     };
 
+    const getFieldPrefix = (val: string): React.ReactNode => {
+      return <CheckCircleTwoTone twoToneColor={val !== "" ? "#52c41a" : "#f5f5f5"}/>;
+    };
+
     return (
    <IsAuthenticated>
      <div className="layout">
@@ -100,17 +101,15 @@ function UserProfile(props) {
         {profile === null ? 
         <Skeleton active={true} /> :
         <Fragment>
-          <Badge.Ribbon text={profile.name}>
           <Card size="small">
           <Descriptions title="User Info">
             <Descriptions.Item label="UserName">{profile.name}</Descriptions.Item>
             <Descriptions.Item label="Telephone">{profile.contactNumber}</Descriptions.Item>
-            <Descriptions.Item label="fb">{profile?.facebook !== "" ? <FacebookOutlined /> : "NA"} </Descriptions.Item>
+            <Descriptions.Item label="fb">{profile?.facebook !== "" ?  <FacebookOutlined /> : "NA"} </Descriptions.Item>
             <Descriptions.Item label="Twitter">{profile?.twitter !== "" ? <TwitterOutlined /> : "NA"} </Descriptions.Item>
             <Descriptions.Item label="Web">{profile?.website !== "" ? <ChromeOutlined /> : "NA"} </Descriptions.Item>
           </Descriptions>
           </Card>
-          </Badge.Ribbon>
           <StyledTitle>Info</StyledTitle>
           <StyledCard size="small">
             <Form
@@ -132,25 +131,25 @@ function UserProfile(props) {
               <Input prefix={<UserOutlined />} value={email} disabled={true} />
               </Form.Item>
               <Form.Item label="Org name" name="name">
-              <Input placeholder={profile.name} disabled={formLoading} />
+              <Input prefix={getFieldPrefix(profile.name)} placeholder={profile.name} disabled={formLoading} />
               </Form.Item>
               <Form.Item label="Contact No" name="number">
-                <Input value={profile.contactNumber} disabled={formLoading} />
+                <Input prefix={getFieldPrefix(profile.contactNumber)} value={profile.contactNumber} disabled={formLoading} />
               </Form.Item>
               <Form.Item label="Location" name="location">
-                <Input value={profile.location} disabled={formLoading} />
+                <Input prefix={getFieldPrefix(profile.location)} value={profile.location} disabled={formLoading} />
               </Form.Item>
               <Form.Item label="Address" name="address">
-                <Input value={profile.address} disabled={formLoading} />
+                <Input prefix={getFieldPrefix(profile.address)} value={profile.address} disabled={formLoading} />
               </Form.Item>
               <Form.Item label="Website" name="website">
-                <Input prefix={<ChromeOutlined />} value={profile.website} disabled={formLoading} />
+                <Input prefix={getFieldPrefix(profile.website)} value={profile.website} disabled={formLoading} />
               </Form.Item>
               <Form.Item label="Facebook" name="facebook">
-                <Input prefix={<FacebookOutlined />} value={profile.facebook} disabled={formLoading} />
+                <Input prefix={getFieldPrefix(profile.facebook)} value={profile.facebook} disabled={formLoading} />
               </Form.Item>
               <Form.Item label="Twitter" name="twitter">
-                <Input prefix={<TwitterOutlined />} value={profile.twitter} disabled={formLoading} />
+                <Input prefix={getFieldPrefix(profile.twitter)} value={profile.twitter} disabled={formLoading} />
               </Form.Item>
               <Form.Item>
               <Button disabled={formLoading} type="primary" htmlType="submit">Update</Button>

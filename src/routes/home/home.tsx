@@ -240,7 +240,7 @@ function Home(props) {
                 >
                   <List.Item.Meta
                     avatar={<Avatar style={{backgroundColor: i % 2 === 0 ? colorAvatarPallete[0] :  colorAvatarPallete[1]}} icon={<UserOutlined />} />}
-                    title={<StyledSpanHeading>{messageItem.title} <span>{getTimeFrameFromNow(messageItem.Created_date!)}</span></StyledSpanHeading>}
+                    title={<StyledSpanHeading>{`${messageItem.title} `} <span>{getTimeFrameFromNow(messageItem.Created_date!)}</span></StyledSpanHeading>}
                     description={messageItem.username === email ? "You" : messageItem.username}
                     
                   />
