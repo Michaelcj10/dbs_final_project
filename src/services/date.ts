@@ -19,8 +19,8 @@ export const getTimeFrameFromNow = (unformatted: Date) => {
         return `${now.getMonth() - d.getMonth()} months ago` ;
     }
 
-    if (now.getMonth() === d.getMonth() && now.getDay() !== d.getDay()) {
-        return `${now.getDay() - d.getDay()} days ago` ;
+    if (now.getMonth() === d.getMonth() && now.getDate() !== d.getDate()) {
+        return `${now.getDate() - d.getDate()} days ago` ;
     }
 
     if (now.getDay() === d.getDay() && now.getHours() !== d.getHours()) {

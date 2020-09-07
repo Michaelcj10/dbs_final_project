@@ -2,7 +2,7 @@ import * as React from "react";
 import { push } from "connected-react-router";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { Row, Col, Typography, Comment, Avatar, Button, Input, Form, message } from "antd";
+import { Row, Col, Typography, Comment, Avatar, Button, Input, Form, message, Alert } from "antd";
 import IsAuthenticated from "../../components/authentication/isAuthenticated";
 import styled from "styled-components";
 import { getTimeFrameFromNow } from "../../services/date";
@@ -26,6 +26,10 @@ const StyledInfo = styled.span`
 
 const StyledTextArea = styled(TextArea)`
     resize: none;
+`;
+
+const StyledAlert = styled(Alert)`
+    margin-bottom: 25px;
 `;
 
 // tslint:disable-next-line: typedef
@@ -87,6 +91,8 @@ function ViewMessage(props) {
         <Row>
             <Col span={2} lg={6}/>     
             <Col span={20} lg={12}>
+            {props.message.status[0] === "Flagged" &&
+            <StyledAlert message="This message has been flagged as inappropriate and is under review" type="error" />}
             <Title>{props.message.title}</Title>
             <StyledInfo>
                 {getTimeFrameFromNow(props.message.Created_date)}

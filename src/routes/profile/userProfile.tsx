@@ -2,12 +2,13 @@ import * as React from "react";
 import { push } from "connected-react-router";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import {  Row, Col, Typography, Card, Skeleton, Input, Button, message, Alert , Form , Descriptions } from "antd";
+import {  Row, Col, Typography, Card, Skeleton, Input, Button, message, Alert , Form , Descriptions, Badge } from "antd";
 import IsAuthenticated from "../../components/authentication/isAuthenticated";
 import { useState, useEffect, Fragment } from "react";
 import { Organisation } from "../../domain/interfaces";
 import { makeGet, makePostWithAuth } from "../../api/apiRequest";
 import { UserOutlined, FacebookOutlined , TwitterOutlined, ChromeOutlined } from "@ant-design/icons";
+import styled from "styled-components";
 
 const basicOrg: Organisation = {
   facebook: "",
@@ -19,6 +20,14 @@ const basicOrg: Organisation = {
   name: ""
 };
 const { Title } = Typography;
+
+const StyledCard = styled(Card)`
+    margin-top: 25px;
+`;
+
+const StyledTitle = styled(Title)`
+    margin-top: 25px;
+`;
 
 // tslint:disable-next-line: typedef
 function UserProfile(props) {
@@ -87,10 +96,12 @@ function UserProfile(props) {
         <Col span={20} lg={12}>
         <Title>Profile</Title>
         {!orgRegistered ? <Alert message="Please register your organisation" type="warning" /> : null}
-        <Card size="small">
+        <Fragment>
         {profile === null ? 
         <Skeleton active={true} /> :
         <Fragment>
+          <Badge.Ribbon text={profile.name}>
+          <Card size="small">
           <Descriptions title="User Info">
             <Descriptions.Item label="UserName">{profile.name}</Descriptions.Item>
             <Descriptions.Item label="Telephone">{profile.contactNumber}</Descriptions.Item>
@@ -98,6 +109,10 @@ function UserProfile(props) {
             <Descriptions.Item label="Twitter">{profile?.twitter !== "" ? <TwitterOutlined /> : "NA"} </Descriptions.Item>
             <Descriptions.Item label="Web">{profile?.website !== "" ? <ChromeOutlined /> : "NA"} </Descriptions.Item>
           </Descriptions>
+          </Card>
+          </Badge.Ribbon>
+          <StyledTitle>Info</StyledTitle>
+          <StyledCard size="small">
             <Form
               initialValues={{
                 name: profile.name,
@@ -141,9 +156,10 @@ function UserProfile(props) {
               <Button disabled={formLoading} type="primary" htmlType="submit">Update</Button>
               </Form.Item>
             </Form>
+          </StyledCard>
         </Fragment>
         }
-        </Card>
+        </Fragment>
         </Col>
         <Col span={2} lg={4}/> 
       </Row>

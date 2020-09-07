@@ -58,7 +58,7 @@ function SiteHeader(props: { userProfile: { user: { email: string; }; }; changeP
 
     fetchMyAPI();
   },               [] );
-  
+
   return (
        <HeaderStyle>
         <PageHeader

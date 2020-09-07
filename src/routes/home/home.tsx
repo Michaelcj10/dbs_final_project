@@ -3,10 +3,10 @@ import { push } from "connected-react-router";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import IsAuthenticated from "../../components/authentication/isAuthenticated";
-import { Row, Col, Typography, List, Avatar, Space, Divider, Skeleton , Button, Input, Pagination, message, Modal, Tag } from "antd";
-import { UserOutlined, MessageOutlined, DeleteOutlined, FlagOutlined } from "@ant-design/icons";
+import { Row, Col, Typography, List, Avatar,  Divider, Skeleton , Button, Input, Pagination, message, Modal, Checkbox } from "antd";
+import { UserOutlined, FlagOutlined, WarningOutlined } from "@ant-design/icons";
 import styled from "styled-components";
-import { useState, Fragment } from "react";
+import { useState } from "react";
 import { makeGet, makeDelete, makePostWithAuth } from "../../api/apiRequest";
 import { MessageItem } from "../../domain/interfaces";
 import { getTimeFrameFromNow } from "../../services/date";
@@ -38,11 +38,6 @@ const Flex = styled.div`
   justify-content: space-between;
 `;
 
-const Delete = styled(DeleteOutlined)`
-  margin-left: 10px;
-  color: #c73737;
-`;
-
 const Flag = styled(FlagOutlined)`
   margin-left: 10px;
   color: #1890ff;
@@ -60,6 +55,7 @@ function Home(props) {
   const email = props.userProfile && props.userProfile.user ? props.userProfile.user.email : "";
   const [skipped, setSkipped] = useState<number>(0);
   const [actionInProgress, setInProgress] = useState<boolean>(false);
+  const [showFlagged, setShowFlagged] = useState<boolean>(false);
   const [messageToAction, setAction] = useState<MessageItem|null>(null);
   const [actionState, setActionState] = useState<MessageActionState|null>(null);
 
@@ -80,26 +76,10 @@ function Home(props) {
     fetchMyAPI();
   },               [] );
 
-  const IconText = ({ icon, text }) => (
-    <Space>
-      {React.createElement(icon)}
-      {text}
-    </Space>
-  );
-
   const getFiltered = (): MessageItem[] => {
     const notFlagged = messages ? messages.filter(x => x.status![0] !== "Flagged") : [];
-    let flaggedYours: MessageItem[] = [];
-
-    try {
-      flaggedYours = messages ? messages.filter(x => x.status![0] === "Flagged" && x.username === props.userProfile.user.email) : [];
-    } catch (error) {
-      flaggedYours = [];
-    }
-
-    // tslint:disable-next-line: no-console
-    console.log(notFlagged, flaggedYours);
-    let filtered: MessageItem[] = messages ? messages?.slice(skipped, skipped + 10) : [];
+    const toShow = showFlagged ? messages : notFlagged;
+    let filtered: MessageItem[] = toShow ? toShow?.slice(skipped, skipped + 10) : [];
 
     if (filter !== "") {
 
@@ -208,6 +188,15 @@ function Home(props) {
                     Add new
                   </AddButton>
                 </Flex>
+                <Flex>
+                <Checkbox 
+                      checked={showFlagged}
+                      onChange={() => {
+                        setShowFlagged(!showFlagged);
+                      }}
+                >Show Flagged
+                </Checkbox>
+                </Flex>
             {messages === null  ? <div> {[1, 2, 3, 4].map( (x, y) => {
                 return <Skeleton key={y} loading={true} active={true} avatar={true} />;
             })} </div> : 
@@ -223,8 +212,31 @@ function Home(props) {
                      props.changePage("/view-message");
                    }}
                    actions={[
-                  <IconText icon={MessageOutlined} text={messageItem.replies.length} key="list-vertical-message" />
-                ]}
+                        messageItem.username === email ? 
+                        <Button 
+                          type="link"
+                          key="list-del"  
+                          danger={true}
+                          onClick={(e) => {
+                          e.stopPropagation();
+                          setActionState(MessageActionState.Deleting);
+                          setAction(messageItem!);
+                          setInProgress(true);
+                          }} 
+                        >
+                  delete</Button> : 
+                      messageItem.status![0] === "Flagged" ? <WarningOutlined style={{color: "red"}} /> :
+                        <Button
+                          type="link"
+                          key="list-flag"  
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setActionState(MessageActionState.Flagging);
+                            setAction(messageItem!);
+                            setInProgress(true);
+                          }} 
+                        >
+                  flag  </Button> , <Button type="link" key="list-view">view</Button>]}
                 >
                   <List.Item.Meta
                     avatar={<Avatar style={{backgroundColor: i % 2 === 0 ? colorAvatarPallete[0] :  colorAvatarPallete[1]}} icon={<UserOutlined />} />}
@@ -232,16 +244,6 @@ function Home(props) {
                     description={messageItem.username === email ? "You" : messageItem.username}
                     
                   />
-                  {messageItem.status![0] === "Flagged" ? <Fragment><Tag color="blue">Flagged</Tag> </Fragment>  : messageItem.comment}
-                  {messageItem.username === email ? 
-                  <Delete 
-                      onClick={(e) => {
-                          e.stopPropagation();
-                          setActionState(MessageActionState.Deleting);
-                          setAction(messageItem!);
-                          setInProgress(true);
-                      }} 
-                  /> :  null }
                   {messageItem.status![0] === "Flagged" || messageItem.username === email ? null :
                   <Flag 
                       onClick={(e) => {
