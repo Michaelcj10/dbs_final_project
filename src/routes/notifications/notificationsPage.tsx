@@ -7,7 +7,7 @@ import styled from "styled-components";
 import { NotificationItem, UserProfile } from "../../domain/interfaces";
 import { makePostWithAuth, makeGet } from "../../api/apiRequest";
 import { useState } from "react";
-import { setNotifications } from "../../modules/counter";
+import { setNotifications } from "../../modules/safehub";
 
 const { Title } = Typography;
 
@@ -93,9 +93,9 @@ function Notifications(props: { notifications: NotificationItem[] | (() => Notif
   );
 }
 
-const mapStateToProps = ({ counter }) => ({
-    userProfile: counter.userProfile,
-    notifications: counter.notifications
+const mapStateToProps = ({ safehub }) => ({
+    userProfile: safehub.userProfile,
+    notifications: safehub.notifications
 });
 
 const mapDispatchToProps = dispatch =>

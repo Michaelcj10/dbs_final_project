@@ -11,7 +11,7 @@ import { useState } from "react";
 import { makeGet, makeDelete, makePostWithAuth } from "../../api/apiRequest";
 import { MessageItem } from "../../domain/interfaces";
 import { getTimeFrameFromNow } from "../../services/date";
-import { setViewedMsg } from "../../modules/counter";
+import { setViewedMsg } from "../../modules/safehub";
 import logo from "../../images/logo.png";
 
 const { Title, Paragraph } = Typography;
@@ -318,8 +318,8 @@ function Home(props: { userProfile: { user: { email: string; }; }; changePage: (
   );
 }
 
-const mapStateToProps = ({ counter }) => ({
-  userProfile: counter.userProfile
+const mapStateToProps = ({ safehub }) => ({
+  userProfile: safehub.userProfile
 });
 
 const mapDispatchToProps = dispatch =>

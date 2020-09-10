@@ -1,5 +1,5 @@
 import { PageHeader, Button, Menu, Badge, Avatar  } from "antd";
-import { setUserProfile, setNotifications, setViewedOrganisation, orginitial } from "../../modules/counter";
+import { setUserProfile, setNotifications, setViewedOrganisation, orginitial } from "../../modules/safehub";
 import * as React from "react";
 import styled from "styled-components";
 import { push } from "connected-react-router";
@@ -179,9 +179,9 @@ function SiteHeader(props: { userProfile: { user: { email: string; }; }; setNoti
   );
 }
 
-const mapStateToProps = ({ counter }) => ({
-    userProfile: counter.userProfile,
-    notifications: counter.notifications
+const mapStateToProps = ({ safehub }) => ({
+    userProfile: safehub.userProfile,
+    notifications: safehub.notifications
 });
 
 const mapDispatchToProps = dispatch =>

@@ -6,7 +6,7 @@ import { Row, Col, Typography, Skeleton, List, Avatar, Divider } from "antd";
 import { makeGet } from "../../api/apiRequest";
 import { Organisation } from "../../domain/interfaces";
 import { UserOutlined } from "@ant-design/icons";
-import { setViewedOrganisation } from "../../modules/counter";
+import { setViewedOrganisation } from "../../modules/safehub";
 
 const { Title } = Typography;
 
@@ -75,8 +75,8 @@ function Organisations(props: { userProfile: { userId: string; }; setViewedOrgan
     );
 }
 
-const mapStateToProps = ({ counter }) => ({
-    userProfile: counter.userProfile
+const mapStateToProps = ({ safehub }) => ({
+    userProfile: safehub.userProfile
 });
 
 const mapDispatchToProps = dispatch =>

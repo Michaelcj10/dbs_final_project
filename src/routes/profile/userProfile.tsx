@@ -167,8 +167,8 @@ function UserProfile(props: { userProfile: { user: { email: string; }; userId: s
   );
 }
 
-const mapStateToProps = ({ counter }) => ({
-  userProfile: counter.userProfile
+const mapStateToProps = ({ safehub }) => ({
+  userProfile: safehub.userProfile
 });
 
 const mapDispatchToProps = dispatch =>

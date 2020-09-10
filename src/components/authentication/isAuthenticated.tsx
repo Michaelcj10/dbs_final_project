@@ -1,4 +1,4 @@
-import { setUserProfile, setOrganisation } from "../../modules/counter";
+import { setUserProfile, setOrganisation } from "../../modules/safehub";
 import { push } from "connected-react-router";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -44,8 +44,8 @@ function IsAuthenticated(props) {
   return props.children;
 }
 
-const mapStateToProps = ({ counter }) => ({
-  userProfile: counter.userProfile
+const mapStateToProps = ({ safehub }) => ({
+  userProfile: safehub.userProfile
 });
 
 const mapDispatchToProps = dispatch =>

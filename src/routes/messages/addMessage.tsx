@@ -97,8 +97,8 @@ function AddMessage(props: { userProfile: { user: { email: string; }; }; }) {
   );
 }
 
-const mapStateToProps = ({ counter }) => ({
-  userProfile: counter.userProfile
+const mapStateToProps = ({ safehub }) => ({
+  userProfile: safehub.userProfile
 });
 
 const mapDispatchToProps = dispatch =>

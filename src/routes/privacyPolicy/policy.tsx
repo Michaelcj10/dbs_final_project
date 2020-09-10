@@ -37,9 +37,9 @@ function Privacy() {
   );
 }
 
-const mapStateToProps = ({ counter }) => ({
-  places: counter.placeList,
-  isLoading: counter.loading
+const mapStateToProps = ({ safehub }) => ({
+  places: safehub.placeList,
+  isLoading: safehub.loading
 });
 
 const mapDispatchToProps = dispatch =>

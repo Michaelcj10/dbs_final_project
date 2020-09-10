@@ -10,7 +10,7 @@ import { UserOutlined, FrownOutlined } from "@ant-design/icons";
 import { CommentReply } from "../../domain/interfaces";
 import { useState } from "react";
 import { makeGet, makePostWithAuth } from "../../api/apiRequest";
-import { setViewedMsg } from "../../modules/counter";
+import { setViewedMsg } from "../../modules/safehub";
 import Panel from "../../components/infoPanel/panel";
 
 const { Title , Paragraph } = Typography;
@@ -163,9 +163,9 @@ function ViewMessage(props) {
     );
 }
 
-const mapStateToProps = ({ counter }) => ({
-  message: counter.message,
-  userProfile: counter.userProfile
+const mapStateToProps = ({ safehub }) => ({
+  message: safehub.message,
+  userProfile: safehub.userProfile
 });
 
 const mapDispatchToProps = dispatch =>

@@ -100,9 +100,9 @@ function ViewOrganisation(props: { viewedOrganisation: Organisation; }) {
     );
 }
 
-const mapStateToProps = ({ counter }) => ({
-    userProfile: counter.userProfile,
-    viewedOrganisation: counter.viewedOrganisation
+const mapStateToProps = ({ safehub }) => ({
+    userProfile: safehub.userProfile,
+    viewedOrganisation: safehub.viewedOrganisation
 });
 
 const mapDispatchToProps = dispatch =>
