@@ -2,23 +2,24 @@ const SET_USER_PROFILE = "SET_USER_PROFILE";
 const SET_VIEWED_MSG = "SET_VIEWED_MSG";
 const SET_USER_ORG = "SET_USER_ORG";
 const SET_VIEWED_ORG = "SET_VIEWED_ORG";
-import { MessageItem, UserProfile, Organisation } from "../domain/interfaces";
+const SET_NOTIFICATIONS = "SET_NOTIFICATIONS";
+import { MessageItem, UserProfile, Organisation, NotificationItem } from "../domain/interfaces";
 
-const msgs: MessageItem = {
+export const msgsinitial: MessageItem = {
   comment: "",
   replies: [],
   title: "",
   username: ""
 };
 
-const usrPrf: UserProfile = {
+export const usrPrfinitial: UserProfile = {
   detail: "",
   email: "",
   title: "",
   user: {email: ""}
 };
 
-const org: Organisation = {
+export const orginitial: Organisation = {
   address: "",
   contactNumber: "",
   facebook: "",
@@ -29,10 +30,11 @@ const org: Organisation = {
 };
 
 const initialState = {
-  userProfile: usrPrf,
-  message: msgs,
-  organisation: org,
-  viewedOrganisation: org
+  userProfile: usrPrfinitial,
+  message: msgsinitial,
+  organisation: orginitial,
+  viewedOrganisation: orginitial,
+  notifications: []
 };
 
 export default (state = initialState, action) => {
@@ -56,6 +58,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         message: action.message
+    };
+    case SET_NOTIFICATIONS:
+      return {
+        ...state,
+        notifications: action.notifications
     };
 
     default:
@@ -95,6 +102,15 @@ export const setViewedOrganisation = (organisation: Organisation) => {
     dispatch({
       type: SET_VIEWED_ORG,
       organisation
+    });
+  };
+};
+
+export const setNotifications = (notifications: NotificationItem[]) => {
+  return dispatch => {
+    dispatch({
+      type: SET_NOTIFICATIONS,
+      notifications
     });
   };
 };

@@ -1,5 +1,5 @@
 import { PageHeader, Button, Menu, Badge, Avatar  } from "antd";
-import { setUserProfile } from "../../modules/counter";
+import { setUserProfile, setNotifications, setViewedOrganisation, orginitial } from "../../modules/counter";
 import * as React from "react";
 import styled from "styled-components";
 import { push } from "connected-react-router";
@@ -11,6 +11,7 @@ import SubMenu from "antd/lib/menu/SubMenu";
 import { useState } from "react";
 import logo from "../../images/logo.png";
 import { makeGet } from "../../api/apiRequest";
+import { NotificationItem } from "../../domain/interfaces";
 
 const HeaderStyle = styled.div`
     border: 1px solid rgb(235, 237, 240);
@@ -32,10 +33,13 @@ const Logo = styled.img`
   cursor:pointer;
 `;
 
-function SiteHeader(props: { userProfile: { user: { email: string; }; }; changePage: (arg0: string) => void; setUserProfile: (arg0: {}) => void; }) {
+const NotificationLink = styled.div`
+  cursor: pointer;
+`;
+
+function SiteHeader(props: { userProfile: { user: { email: string; }; }; setNotifications: (arg0: NotificationItem[]) => void; changePage: (arg0: string) => void; notifications: NotificationItem[]; setUserProfile: (arg0: {}) => void; }) {
   const loggedIn = props.userProfile && props.userProfile.user && props.userProfile.user.email;
   const [current, setCurrent] = useState<string>("");
-  const [notifications, setNotifications] = useState<number>(0);
 
   const handleClick = e => {
     setCurrent(e.key);
@@ -45,9 +49,10 @@ function SiteHeader(props: { userProfile: { user: { email: string; }; }; changeP
     try {
       const response = await makeGet("notifications");
       const mine = response.filter(x => x.username === props.userProfile!.user!.email);
-      setNotifications(mine.length);
+      props.setNotifications(mine);
     } catch (error) {
-      setNotifications(0);
+      // tslint:disable-next-line: no-console
+      console.log("Get notification error");
     }
   };
 
@@ -83,9 +88,16 @@ function SiteHeader(props: { userProfile: { user: { email: string; }; }; changeP
                 </StyledSpanHeading> : null
             }
             extra={loggedIn ?  [
-              <Badge count={notifications} key="msg-count">
+              <NotificationLink 
+                  key="notifications" 
+                  onClick={() => {
+                    props.changePage("/notifications");
+                  }}
+              >
+              <Badge count={props.notifications.filter(x => x.status![0] !== "Read").length} key="msg-count">
                 <Avatar shape="square" icon={<UserOutlined />} />
               </Badge>
+              </NotificationLink>
             ] : [
               <StyledSpanHeading 
                   key="3"
@@ -146,9 +158,12 @@ function SiteHeader(props: { userProfile: { user: { email: string; }; }; changeP
               <SwitchLink 
                   type="link"
                   onClick={() => {
+
+                    props.setNotifications([]);
                     props.setUserProfile({});
                     deleteSession();
                     deleteCookie("token");
+                    setViewedOrganisation(orginitial);
                     props.changePage("/auth");
                   }}
               >
@@ -165,14 +180,17 @@ function SiteHeader(props: { userProfile: { user: { email: string; }; }; changeP
 }
 
 const mapStateToProps = ({ counter }) => ({
-    userProfile: counter.userProfile
+    userProfile: counter.userProfile,
+    notifications: counter.notifications
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       changePage: value => push(value),
-      setUserProfile
+      setUserProfile,
+      setNotifications,
+      setViewedOrganisation
     },
     dispatch
   );

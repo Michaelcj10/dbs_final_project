@@ -23,6 +23,7 @@ const Privacy = React.lazy(() => import("../routes/privacyPolicy/policy"));
 const UserProfile = React.lazy(() => import("../routes/profile/userProfile"));
 const Organisations = React.lazy(() => import("../routes/orgs/organisations"));
 const ViewOrganisation = React.lazy(() => import("../routes/orgs/viewOrganisation"));
+const Notifications = React.lazy(() => import("../routes/notifications/notificationsPage"));
 
 function App() {
 
@@ -41,6 +42,7 @@ function App() {
           <Route exact={true} path="/profile" component={UserProfile} />
           <Route exact={true} path="/view-organisation" component={ViewOrganisation} />
           <Route exact={true} path="/organisations" component={Organisations} />
+          <Route exact={true} path="/notifications" component={Notifications} />
           </ConnectedRouter>
           <GlobalStyle />
         </PersistGate>

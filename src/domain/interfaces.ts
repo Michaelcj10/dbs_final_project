@@ -38,3 +38,11 @@ export interface Organisation {
   twitter:  string;
   Created_date?: Date;
 }
+
+export interface NotificationItem {
+  Created_date?: Date;
+  comment: string;
+  username: string;
+  _id?: string;
+  status?: string[];
+}

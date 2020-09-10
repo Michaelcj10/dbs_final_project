@@ -39,9 +39,7 @@ function AddMessage(props: { userProfile: { user: { email: string; }; }; }) {
     };
     setLoading(true);
     try {
-      const response = await makePostWithAuth("messages", dataPost);
-      // tslint:disable-next-line: no-console
-      console.log(response);
+      await makePostWithAuth("messages", dataPost);
       message.success("Message posted");
       resetForm();
     } catch (e) {
@@ -55,7 +53,7 @@ function AddMessage(props: { userProfile: { user: { email: string; }; }; }) {
      <div className="layout">
       <Row>
         <Col span={2} lg={8}/>     
-        <Col span={20} lg={10}>
+        <Col span={20} lg={8}>
         <Title>New message</Title>
         <AlertTerms>
           <WarningOutlined /> <Paragraph style={{margin: "0px 10px"}}>Do not use names, numbers etc that can identify a client.</Paragraph>

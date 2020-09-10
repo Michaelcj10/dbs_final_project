@@ -2,15 +2,16 @@ import * as React from "react";
 import { push } from "connected-react-router";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { Row, Col, Typography, Comment, Avatar, Button, Input, Form, message, Alert } from "antd";
+import { Row, Col, Typography, Comment, Avatar, Button, Input, Form, message, Modal } from "antd";
 import IsAuthenticated from "../../components/authentication/isAuthenticated";
 import styled from "styled-components";
 import { getTimeFrameFromNow } from "../../services/date";
-import { UserOutlined } from "@ant-design/icons";
+import { UserOutlined, FrownOutlined } from "@ant-design/icons";
 import { CommentReply } from "../../domain/interfaces";
 import { useState } from "react";
 import { makeGet, makePostWithAuth } from "../../api/apiRequest";
 import { setViewedMsg } from "../../modules/counter";
+import Panel from "../../components/infoPanel/panel";
 
 const { Title , Paragraph } = Typography;
 const { TextArea } = Input;
@@ -28,7 +29,7 @@ const StyledTextArea = styled(TextArea)`
     resize: none;
 `;
 
-const StyledAlert = styled(Alert)`
+const StyledAlert = styled.div`
     margin-bottom: 25px;
 `;
 
@@ -36,8 +37,7 @@ const StyledAlert = styled(Alert)`
 function ViewMessage(props) {
     const [replyComment, setComment] = useState<string>("");
     const email = props.userProfile && props.userProfile.user ? props.userProfile.user.email : "";
-    // tslint:disable-next-line: no-console
-    console.log(props);
+    const [showLearnMore, setShowLearnMore] = useState<boolean>(false);
 
     const getUpdatedMessage = async () => {
 
@@ -92,7 +92,17 @@ function ViewMessage(props) {
             <Col span={2} lg={8}/>     
             <Col span={20} lg={10}>
             {props.message.status[0] === "Flagged" &&
-            <StyledAlert message="This message has been flagged as inappropriate and is under review" type="error" />}
+            <StyledAlert>
+            <Panel 
+                  title=" Flagged message" 
+                  icon={<FrownOutlined style={{marginRight: "10px"}} />}
+                  linkTitle="Learn more" 
+                  onClick={() => {
+                    setShowLearnMore(!showLearnMore);
+                  }}  
+            />       
+            </StyledAlert>}
+       
             <Title>{props.message.title}</Title>
             <StyledInfo>
                 {getTimeFrameFromNow(props.message.Created_date)}
@@ -128,6 +138,27 @@ function ViewMessage(props) {
             <Col span={2} lg={8}/>    
         </Row>
         </div>
+        <Modal
+              title=""
+              visible={showLearnMore}
+              okText="Dashboard"
+              onOk={() => {
+                props.changePage("/profile");
+             }}
+              onCancel={() => {
+                setShowLearnMore(false);
+             }}
+        >
+              <Title level={4}>Why has this happened?</Title>
+              <Paragraph>
+                A message can be flagged if it contains info that can make a client identifiable.
+                Such as a name, address, email or phone number of a client.
+              </Paragraph>
+              <Title level={4}>What happens now?</Title>
+              <Paragraph>
+                An admin is reviewing the message and will contact you if the message is removed from the website.
+              </Paragraph>
+        </Modal>
     </IsAuthenticated>
     );
 }

@@ -3,7 +3,8 @@ import { push } from "connected-react-router";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import IsAuthenticated from "../../components/authentication/isAuthenticated";
-import { Row, Col, Typography, List, Avatar,  Divider, Skeleton , Button, Input, Pagination, message, Modal, Checkbox, Card, Timeline } from "antd";
+import Panel from "../../components/infoPanel/panel";
+import { Row, Col, Typography, List, Avatar,  Divider, Skeleton , Button, Input, Pagination, message, Modal, Checkbox, Timeline } from "antd";
 import { UserOutlined, WarningOutlined, SmileOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import { useState } from "react";
@@ -40,10 +41,6 @@ const SearchInput = styled(Search)`
   margin-bottom: 25px;
 `;
 
-const StyledCard = styled(Card)`
-  margin-bottom: 25px;
-`;
-
 const Flex = styled.div`
   display: flex;
   justify-content: space-between;
@@ -53,10 +50,6 @@ const Flex = styled.div`
 const SwitchLink = styled(Button)`
   padding: 0px;
   font-weight: bold;
-`;
-
-const WelcomeTitle = styled(Title)`
-  font-size: 14px;
 `;
 
 enum MessageActionState {
@@ -117,10 +110,9 @@ function Home(props: { userProfile: { user: { email: string; }; }; changePage: (
 
     try {
       const response = await makePostWithAuth("notifications", dataPost);
-      if (response.errors) {
-        message.error("Invalid details, try again");    
-
-      }
+ 
+      // tslint:disable-next-line: no-console
+      console.log(response);
     } catch (e) {
       message.error("Invalid details, try again");
     }
@@ -178,21 +170,14 @@ function Home(props: { userProfile: { user: { email: string; }; }; changePage: (
         <Row>
           <Col span={2} lg={6}/>     
           <Col span={20} lg={12}>
-            <StyledCard>
-              <Flex>
-              <WelcomeTitle style={{fontSize: "14px", marginBottom: "0px"}}>
-                <SmileOutlined style={{marginRight: "10px"}} />
-                 Welcome to Safe Hub!
-              </WelcomeTitle>
-              <SwitchLink 
+            <Panel 
+                  title=" Welcome to Safe Hub!" 
+                  icon={<SmileOutlined style={{marginRight: "10px"}} />}
+                  linkTitle="Learn more" 
                   onClick={() => {
                     setShowLearnMore(!showLearnMore);
-                  }} 
-                  type="link"
-              >Learn more
-              </SwitchLink>
-              </Flex>
-            </StyledCard>
+                  }}  
+            />
             <Title>Message center</Title>
             <Divider orientation="left" plain={true} >
               {!messages ? <Skeleton.Input style={{ width: 100, height: "10px"}} active={true} /> :             
