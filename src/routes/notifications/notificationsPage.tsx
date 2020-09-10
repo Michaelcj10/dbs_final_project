@@ -50,9 +50,6 @@ function Notifications(props: { notifications: NotificationItem[] | (() => Notif
 
   const unread = notifications.filter(x => x.status![0] === "Unread").length;
 
-  // tslint:disable-next-line: no-console
-  console.log(notifications);
-
   return (
     <div className="layout">
         <Row>

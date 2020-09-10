@@ -109,10 +109,7 @@ function Home(props: { userProfile: { user: { email: string; }; }; changePage: (
     };
 
     try {
-      const response = await makePostWithAuth("notifications", dataPost);
- 
-      // tslint:disable-next-line: no-console
-      console.log(response);
+      await makePostWithAuth("notifications", dataPost);
     } catch (e) {
       message.error("Invalid details, try again");
     }
@@ -124,9 +121,7 @@ function Home(props: { userProfile: { user: { email: string; }; }; changePage: (
 
     if (actionState === MessageActionState.Deleting) {
       try {
-        const response = await makeDelete("messages", id!);
-        // tslint:disable-next-line: no-console
-        console.log(response);
+        await makeDelete("messages", id!);
         getMessages();
         setInProgress(false);
         message.success("Deleted");
