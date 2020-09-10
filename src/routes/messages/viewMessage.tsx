@@ -69,9 +69,7 @@ function ViewMessage(props) {
          };
 
         try {
-             const response = await makePostWithAuth(`messages/${props.message._id}`, newReply, true);
-             // tslint:disable-next-line: no-console
-             console.log(response);
+             await makePostWithAuth(`messages/${props.message._id}`, newReply, true);
              getUpdatedMessage();
              setComment("");
              message.success("Comment posted!");
