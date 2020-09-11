@@ -152,7 +152,7 @@ function UserProfile(props: { userProfile: { user: { email: string; }; userId: s
                 <Input prefix={getFieldPrefix(profile.twitter)} value={profile.twitter} disabled={formLoading} />
               </Form.Item>
               <Form.Item>
-              <Button disabled={formLoading} type="primary" htmlType="submit">Update</Button>
+              <Button size="large" disabled={formLoading} type="primary" htmlType="submit">Update</Button>
               </Form.Item>
             </Form>
           </StyledCard>

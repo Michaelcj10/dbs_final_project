@@ -84,7 +84,7 @@ function AddMessage(props: { userProfile: { user: { email: string; }; }; }) {
             />
           </Form.Item>
           <Form.Item>
-            <FullBtn type="primary" htmlType="submit" loading={formLoading}>
+            <FullBtn size="large" type="primary" htmlType="submit" loading={formLoading}>
                 Add
             </FullBtn>
           </Form.Item>

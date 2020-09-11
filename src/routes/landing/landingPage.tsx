@@ -2,10 +2,13 @@ import * as React from "react";
 import { push } from "connected-react-router";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { Row, Col, Typography, Divider, Button } from "antd";
+import { Row, Col, Typography, Button } from "antd";
 import styled from "styled-components";
 import landingImg from "../../images/landing.svg";
 import landingAvatar from "../../images/landing-1.svg";
+import lock from "../../images/lock.svg";
+import speed from "../../images/speed.svg";
+import search from "../../images/search.svg";
 
 const { Title, Paragraph } = Typography;
 
@@ -49,6 +52,14 @@ const CustomTitle = styled(Title)`
     padding: 0 15px;
 `;
 
+const IconsRow = styled(Row)`
+    margin: 50px 0px;
+`;
+
+const IconImg = styled.img`
+    width: 80px;
+`;
+
 function Landing(props: { changePage: (arg0: string) => void; }) {
   return (
       <div className="layout">
@@ -88,7 +99,26 @@ function Landing(props: { changePage: (arg0: string) => void; }) {
                     a particular refuge as well as any security breaches or potential breaches a refuge has.
                     All data is encrypted and we are GDPR compliant.
                 </Paragraph>
-                <Divider />
+                <IconsRow>
+                  <SmallCol span={8}>
+                    <IconImg src={lock} alt="secure" />
+                    <Title level={4}>
+                      Secure
+                    </Title>
+                  </SmallCol>
+                  <SmallCol span={8}>
+                    <IconImg src={speed} alt="fast" />
+                    <Title level={4}>
+                      Fast
+                    </Title>
+                  </SmallCol>
+                  <SmallCol span={8}>
+                    <IconImg src={search} alt="seo compliant" />
+                    <Title level={4}>
+                      SEO
+                    </Title>  
+                  </SmallCol>
+                </IconsRow>
                 <StyledTitle level={3}>Get involved
                 </StyledTitle>
                 <Paragraph>

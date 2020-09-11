@@ -9,7 +9,7 @@ import { getTimeFrameFromNow } from "../../services/date";
 import { UserOutlined, FrownOutlined } from "@ant-design/icons";
 import { CommentReply } from "../../domain/interfaces";
 import { useState } from "react";
-import { makeGet, makePostWithAuth } from "../../api/apiRequest";
+import { makeDelete, makeGet, makePostWithAuth } from "../../api/apiRequest";
 import { setViewedMsg } from "../../modules/safehub";
 import Panel from "../../components/infoPanel/panel";
 
@@ -38,8 +38,13 @@ function ViewMessage(props) {
     const [replyComment, setComment] = useState<string>("");
     const email = props.userProfile && props.userProfile.user ? props.userProfile.user.email : "";
     const [showLearnMore, setShowLearnMore] = useState<boolean>(false);
+    const [actionInProgress, setInProgress] = useState<boolean>(false);
+
+    const isYours = props.message.username === email;
 
     const getUpdatedMessage = async () => {
+
+        setInProgress(true);
 
         try {
             const response = await makeGet(`messages/${props.message._id}`);
@@ -47,8 +52,10 @@ function ViewMessage(props) {
             console.log(response);
 
             props.setViewedMsg(response);
+            setInProgress(false);
         } catch (error) {
             message.error("Something went wrong");
+            setInProgress(false);
         }
     };
 
@@ -69,13 +76,16 @@ function ViewMessage(props) {
          };
 
         try {
+             setInProgress(true);
              await makePostWithAuth(`messages/${props.message._id}`, newReply, true);
              getUpdatedMessage();
              setComment("");
              message.success("Comment posted!");
+             setInProgress(false);
          } catch (error) {
              setComment("");
              message.error("Something went wrong");
+             setInProgress(false);
          }
     };
 
@@ -83,9 +93,24 @@ function ViewMessage(props) {
         setComment(e.target.value);
     };
 
+    const deleteMsg = async () => {
+      try {
+        setInProgress(true);
+        await makeDelete("messages", props.message._id);
+        message.success("Deleted");
+        props.changePage("/dashboard");
+        return;
+        
+      } catch (error) {
+        message.error("Cannot delete, try again");
+        setInProgress(false);
+      }
+    };
+
     return (
     <IsAuthenticated>
         <div className="layout">
+        {props.message && props.message !== {} &&
         <Row>
             <Col span={2} lg={8}/>     
             <Col span={20} lg={10}>
@@ -122,19 +147,26 @@ function ViewMessage(props) {
               <Form.Item>
               <Title level={4}>Leave a comment</Title>
                 <StyledTextArea 
+                    disabled={actionInProgress}
                     rows={4} 
                     value={replyComment} 
                     onChange={setVal} 
                 />
                 </Form.Item>
                 <Form.Item>
-                <Button htmlType="submit" loading={false} onClick={submitComment} type="primary">
+                <Button size="large" htmlType="submit" loading={actionInProgress} onClick={submitComment} type="primary">
                     Add Comment
                 </Button>
               </Form.Item>
+              <Form.Item>
+                {isYours && 
+                   <Button size="large" htmlType="submit" danger={true} loading={actionInProgress} onClick={deleteMsg} type="primary">
+                       Delete
+                   </Button>}
+              </Form.Item>
             </Col>
             <Col span={2} lg={8}/>    
-        </Row>
+        </Row>}
         </div>
         <Modal
               title=""

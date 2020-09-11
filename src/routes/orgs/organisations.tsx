@@ -15,9 +15,6 @@ function Organisations(props: { userProfile: { userId: string; }; setViewedOrgan
     const [orgs, setOrgs] = React.useState<Organisation[]|null>(null);
     const userId = props.userProfile ? props.userProfile.userId : "";
 
-    // tslint:disable-next-line: no-console
-    console.log(orgs, "orgs");
-
     const getOrgs = async () => {
         try {
           const response = await makeGet("organisations");

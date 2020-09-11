@@ -30,6 +30,7 @@ function NotFoundPage(props: { changePage: (arg0: string) => void; }) {
                 The location you searched for doesn't seem to exist on this website. Maybe the link has expired.
             </Paragraph>
                 <Button 
+                  size="large"
                   type="primary"
                   onClick={() => {
                     props.changePage("/");

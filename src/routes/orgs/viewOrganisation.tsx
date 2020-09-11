@@ -90,7 +90,7 @@ function ViewOrganisation(props: { viewedOrganisation: Organisation; }) {
                     />
                     </Form.Item>
                     <Form.Item>
-                    <Button htmlType="submit" loading={false} onClick={submitComment} type="primary">
+                    <Button size="large" htmlType="submit" loading={false} onClick={submitComment} type="primary">
                         Add Comment
                     </Button>
               </Form.Item>

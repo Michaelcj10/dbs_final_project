@@ -84,7 +84,7 @@ function Auth(props: { userProfile: { user: { email: string; }; }; changePage: (
             <Input.Password disabled={formLoading} />
           </Form.Item>
           <Form.Item>
-            <FullBtn type="primary" htmlType="submit" loading={formLoading}>
+            <FullBtn size="large" type="primary" htmlType="submit" loading={formLoading}>
             {hasAccount ? "Login" : "Register"}
             </FullBtn>
           </Form.Item>
@@ -119,6 +119,7 @@ function Auth(props: { userProfile: { user: { email: string; }; }; changePage: (
             subTitle="Visit your dashboard to start using our features now."
             extra={[
               <Button 
+                  size="large"
                   type="primary"
                   onClick={() => {
                     props.changePage("/dashboard");

@@ -67,7 +67,7 @@ function Home(props: { userProfile: { user: { email: string; }; }; changePage: (
   const [showLearnMore, setShowLearnMore] = useState<boolean>(false);
   const [messageToAction, setAction] = useState<MessageItem|null>(null);
   const [actionState, setActionState] = useState<MessageActionState|null>(null);
-
+  
   const getMessages = async () => {
     try {
       const response = await makeGet("messages");
@@ -78,6 +78,15 @@ function Home(props: { userProfile: { user: { email: string; }; }; changePage: (
   };
 
   React.useEffect( () => {
+
+    // used for if message deleted, set redux state back to empty
+    props.setViewedMsg({
+      comment: "",
+      replies: [],
+      title: "",
+      username: ""
+    });
+
     async function fetchMyAPI() {
         await getMessages();
     }
@@ -191,7 +200,8 @@ function Home(props: { userProfile: { user: { email: string; }; }; changePage: (
                     style={{ width: 200 }}
                   /> : null }
                   <AddButton 
-                    size="large" 
+                    size="large"
+                    type="primary" 
                     onClick={() => {
                       props.changePage("/add-message");
                     }}
