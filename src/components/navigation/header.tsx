@@ -57,6 +57,7 @@ function SiteHeader(props: { userProfile: { user: { email: string; }; }; setNoti
   };
 
   React.useEffect( () => {
+
     async function fetchMyAPI() {
         await getNotifications();
     }

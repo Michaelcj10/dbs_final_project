@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 import { ConnectedRouter } from "connected-react-router";
 import store, { history } from "../store/mainStore";
 import { PersistGate } from "redux-persist/integration/react";
-import { Route } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import { Suspense } from "react";
 
 const GlobalStyle = createGlobalStyle`
@@ -24,6 +24,7 @@ const UserProfile = React.lazy(() => import("../routes/profile/userProfile"));
 const Organisations = React.lazy(() => import("../routes/orgs/organisations"));
 const ViewOrganisation = React.lazy(() => import("../routes/orgs/viewOrganisation"));
 const Notifications = React.lazy(() => import("../routes/notifications/notificationsPage"));
+const Fallback = React.lazy(() => import("../routes/notFound/404"));
 
 function App() {
 
@@ -33,16 +34,19 @@ function App() {
         <PersistGate loading={null} persistor={store.persistor}>
           <ConnectedRouter history={history}>
           <Header/>
-          <Route exact={true} path="/" component={Landing} />
-          <Route exact={true} path="/dashboard" component={Home} />
-          <Route exact={true} path="/add-message" component={AddMessage} />
-          <Route exact={true} path="/view-message" component={ViewMessage} />
-          <Route exact={true} path="/auth" component={Auth} />
-          <Route exact={true} path="/privacy-policy" component={Privacy} />
-          <Route exact={true} path="/profile" component={UserProfile} />
-          <Route exact={true} path="/view-organisation" component={ViewOrganisation} />
-          <Route exact={true} path="/organisations" component={Organisations} />
-          <Route exact={true} path="/notifications" component={Notifications} />
+          <Switch>
+            <Route exact={true} path="/" component={Landing} />
+            <Route exact={true} path="/dashboard" component={Home} />
+            <Route exact={true} path="/add-message" component={AddMessage} />
+            <Route exact={true} path="/view-message" component={ViewMessage} />
+            <Route exact={true} path="/auth" component={Auth} />
+            <Route exact={true} path="/privacy-policy" component={Privacy} />
+            <Route exact={true} path="/profile" component={UserProfile} />
+            <Route exact={true} path="/view-organisation" component={ViewOrganisation} />
+            <Route exact={true} path="/organisations" component={Organisations} />
+            <Route exact={true} path="/notifications" component={Notifications} />
+            <Route component={Fallback} />
+          </Switch>
           </ConnectedRouter>
           <GlobalStyle />
         </PersistGate>
