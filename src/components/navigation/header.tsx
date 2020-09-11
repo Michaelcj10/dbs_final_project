@@ -37,7 +37,7 @@ const NotificationLink = styled.div`
   cursor: pointer;
 `;
 
-function SiteHeader(props: { userProfile: { user: { email: string; }; }; setNotifications: (arg0: NotificationItem[]) => void; changePage: (arg0: string) => void; notifications: NotificationItem[]; setUserProfile: (arg0: {}) => void; }) {
+function SiteHeader(props: { userProfile: { user: { email: string; }; userId: string }; setNotifications: (arg0: NotificationItem[]) => void; changePage: (arg0: string) => void; notifications: NotificationItem[]; setUserProfile: (arg0: {}) => void; }) {
   const loggedIn = props.userProfile && props.userProfile.user && props.userProfile.user.email;
   const [current, setCurrent] = useState<string>("");
 
@@ -47,12 +47,10 @@ function SiteHeader(props: { userProfile: { user: { email: string; }; }; setNoti
 
   const getNotifications = async () => {
     try {
-      const response = await makeGet("notifications");
-      const mine = response.filter(x => x.username === props.userProfile!.user!.email);
-      props.setNotifications(mine);
+      const response = await makeGet(`notifications/${props.userProfile!.userId}`);
+      props.setNotifications(response.found ? response.found : []);
     } catch (error) {
-      // tslint:disable-next-line: no-console
-      console.log("Get notification error");
+      props.setNotifications([]);
     }
   };
 
