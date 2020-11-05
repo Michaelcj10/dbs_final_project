@@ -21,7 +21,7 @@ export interface CommentReply {
 export interface UserProfile {
   detail: string;
   title: string;
-  user: {email: string };
+  user: { email: string };
   email: string;
   userId?: string;
 }
@@ -30,13 +30,15 @@ export interface Organisation {
   _id?: string;
   userId?: string;
   name: string;
-  location:  string;
-  contactNumber:  string;
-  address:  string;
-  website:  string;
-  facebook:  string;
-  twitter:  string;
+  location: string;
+  contactNumber: string;
+  address: string;
+  website: string;
+  facebook: string;
+  twitter: string;
   Created_date?: Date;
+  bedsAvailable: number;
+  postCode: number;
 }
 
 export interface NotificationItem {
