@@ -68,7 +68,7 @@ function SiteHeader(props: {
       const response = await makeGet(
         `notifications/${props.userProfile!.userId}`
       );
-      props.setNotifications(response.found ? response.found : []);
+      props.setNotifications(response.found);
     } catch (error) {
       props.setNotifications([]);
     }
@@ -80,7 +80,7 @@ function SiteHeader(props: {
     }
 
     fetchMyAPI();
-  }, []);
+  });
 
   return (
     <HeaderStyle>

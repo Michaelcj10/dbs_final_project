@@ -10,6 +10,7 @@ import { makeGet } from "../../api/apiRequest";
 import { ConversationItem, UserProfile } from "../../domain/interfaces";
 import { setViewedConversation } from "../../modules/safehub";
 import styled from "styled-components";
+import { getTimeFrameFromNow } from "../../services/date";
 
 const { Title } = Typography;
 
@@ -29,6 +30,10 @@ function Conversations(props: {
 }) {
   const userId =
     props.userProfile && props.userProfile.user ? props.userProfile.userId : "";
+  const email =
+    props.userProfile && props.userProfile.user
+      ? props.userProfile.user.email
+      : "";
   const [conversations, setConversations] = useState<ConversationItem[] | null>(
     null
   );
@@ -36,6 +41,9 @@ function Conversations(props: {
   const getConversations = async () => {
     try {
       const response = await makeGet(`conversations/${userId}`);
+
+      // tslint:disable-next-line: no-console
+      console.log(response);
       setConversations(response.found);
     } catch (error) {
       setConversations([]);
@@ -69,7 +77,7 @@ function Conversations(props: {
             </Divider>
             {conversations === null ? (
               <div>
-                {[1, 2, 3, 4].map((x, y) => {
+                {[1, 2, 3, 4].map((_x, y) => {
                   return (
                     <Skeleton
                       key={y}
@@ -84,8 +92,8 @@ function Conversations(props: {
               <React.Fragment>
                 <List
                   itemLayout="horizontal"
-                  dataSource={conversations}
-                  renderItem={(convoItem, i) => (
+                  dataSource={conversations.reverse()}
+                  renderItem={(convoItem, _i) => (
                     <List.Item
                       style={{ cursor: "pointer" }}
                       onClick={() => {
@@ -97,12 +105,14 @@ function Conversations(props: {
                         avatar={<Avatar icon={<UserOutlined />} />}
                         title={
                           <StyledSpanHeading>
-                            {convoItem.title}
+                            {convoItem.from === email
+                              ? `${convoItem.to}`
+                              : `${convoItem.title}`}
                           </StyledSpanHeading>
                         }
-                        description={
+                        description={`${
                           convoItem.replies[convoItem.replies.length - 1].reply
-                        }
+                        } ${getTimeFrameFromNow(convoItem.Created_date!)}`}
                       />
                     </List.Item>
                   )}

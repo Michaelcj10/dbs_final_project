@@ -16,6 +16,7 @@ export interface ConversationItem {
   userId: string;
   _id?: string;
   status?: string[];
+  from?: string;
 }
 
 export interface CommentReply {
@@ -58,4 +59,8 @@ export interface NotificationItem {
   username: string;
   _id?: string;
   status?: string[];
+}
+
+export interface FoundNotification {
+  found: NotificationItem[];
 }

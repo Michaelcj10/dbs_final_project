@@ -39,11 +39,8 @@ function Notifications(props: {
   const getNotifications = async () => {
     try {
       const response = await makeGet(`notifications/${userId}`);
-      const mine = response.filter(
-        (x) => x.username === props.userProfile!.user!.email
-      );
-      props.setNotifications(mine);
-      setNotificationsItems(mine);
+      props.setNotifications(response.found);
+      setNotificationsItems(response.found);
     } catch (error) {
       setNotificationsItems([]);
     }
@@ -65,8 +62,6 @@ function Notifications(props: {
     }
   };
 
-  const unread = notifications.filter((x) => x.status![0] === "Unread").length;
-
   return (
     <div className="layout">
       <Row>
@@ -80,7 +75,7 @@ function Notifications(props: {
                 active={true}
               />
             ) : (
-              <div>{`Notifications unread (${unread ? unread : "0"})`}</div>
+              <div>{`Notifications unread (})`}</div>
             )}
           </Divider>
           {notifications === null ? (

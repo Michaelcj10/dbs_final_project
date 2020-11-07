@@ -53,9 +53,6 @@ function ViewConversation(props) {
   const [showLearnMore, setShowLearnMore] = useState<boolean>(false);
   const [actionInProgress, setInProgress] = useState<boolean>(false);
 
-  // tslint:disable-next-line: no-console
-  console.log(props);
-
   const getUpdatedMessage = async () => {
     setInProgress(true);
 

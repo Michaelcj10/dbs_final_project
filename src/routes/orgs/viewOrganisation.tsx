@@ -60,6 +60,19 @@ function ViewOrganisation(props: {
     setComment(e.target.value);
   };
 
+  const setAsNotification = async (user: string, msg: string) => {
+    const dataPost = {
+      comment: msg,
+      username: user,
+    };
+
+    try {
+      await makePostWithAuth("notifications", dataPost);
+    } catch (e) {
+      message.error("Invalid details, try again");
+    }
+  };
+
   const submitComment = async () => {
     if (replyComment === "") {
       message.error("Please enter a comment");
@@ -82,6 +95,7 @@ function ViewOrganisation(props: {
       setInProgress(true);
       await makePostWithAuth(`conversations`, newReply, false);
       setComment("");
+      setAsNotification(org.email, `${email} has sent you a message`);
       message.success("Comment posted!");
       setInProgress(false);
     } catch (error) {
