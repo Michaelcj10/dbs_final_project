@@ -80,7 +80,7 @@ function SiteHeader(props: {
     }
 
     fetchMyAPI();
-  });
+  }, []);
 
   return (
     <HeaderStyle>
