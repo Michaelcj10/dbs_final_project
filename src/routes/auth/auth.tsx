@@ -3,10 +3,21 @@ import styled from "styled-components";
 import { push } from "connected-react-router";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { Form, Input, Button, Row, Col, Typography, message, Divider, Result } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  Row,
+  Col,
+  Typography,
+  message,
+  Divider,
+  Result,
+} from "antd";
 import { useEffect, useState } from "react";
-import { makePost } from "../../api/apiRequest";
+import { makePost, makePostWithAuth } from "../../api/apiRequest";
 import { setCookie } from "../../services/cookie";
+import { Organisation } from "../../domain/interfaces";
 
 const { Title, Paragraph } = Typography;
 
@@ -19,35 +30,66 @@ const SwitchLink = styled(Button)`
   font-weight: bold;
 `;
 
-function Auth(props: { userProfile: { user: { email: string; }; }; changePage: (arg0: string) => void; }) {
-  const loggedIn = props.userProfile && props.userProfile.user && props.userProfile.user.email;
+function Auth(props: {
+  userProfile: { user: { email: string } };
+  changePage: (arg0: string) => void;
+}) {
+  const loggedIn =
+    props.userProfile && props.userProfile.user && props.userProfile.user.email;
   const [hasAccount, setHasAccount] = useState(true);
   const [formLoading, setLoading] = useState(false);
 
-  useEffect(
-     () => {
-       if (!loggedIn) {
-          message.info("Please login or register to continue");
-       }
+  useEffect(() => {
+    if (!loggedIn) {
+      message.info("Please login or register to continue");
+    }
   }, []);
 
-  const onFinish = async (values: { id: string; password: string; }) => {
-
+  const onFinish = async (values: { id: string; password: string }) => {
     setLoading(true);
 
     const dataPost = {
       email: values.id,
-      password: values.password
+      password: values.password,
     };
-    
+
     try {
-      const response = await makePost(hasAccount ? "login" : "register", dataPost);
+      const response = await makePost(
+        hasAccount ? "login" : "register",
+        dataPost
+      );
       if (response.errors) {
-        message.error("Invalid details, try again");    
+        message.error("Invalid details, try again");
         setLoading(false);
       } else {
         setCookie("token", response.token);
-        props.changePage("/dashboard");
+
+        const orgData: Organisation = {
+          address: "",
+          location: "",
+          contactNumber: "",
+          facebook: "",
+          twitter: "",
+          website: "",
+          name: "",
+          bedsAvailable: 0,
+          userId: "",
+          postCode: 0,
+          email: values.id,
+        };
+
+        try {
+          const url = "organisations";
+          const resp = await makePostWithAuth(url, orgData, false);
+
+          // tslint:disable-next-line: no-console
+          console.log(resp);
+          setLoading(false);
+          props.changePage("/dashboard");
+        } catch (e) {
+          props.changePage("/dashboard");
+          setLoading(false);
+        }
       }
     } catch (e) {
       message.error("Invalid details, try again");
@@ -58,99 +100,106 @@ function Auth(props: { userProfile: { user: { email: string; }; }; changePage: (
   return (
     <div className="layout">
       <Row>
-        <Col span={2} lg={8}/>     
-        {!loggedIn ? 
-        <Col span={20} lg={8}>
-        <Title>{hasAccount ? "Welcome back" : "Register now"}</Title>
-        <Form
-            layout="vertical"
-            name="basic"
-            initialValues={{ remember: true }}
-            onFinish={onFinish}
-        >
-          <Form.Item
-            label="Email"
-            name="id"
-            rules={[{ required: true, message: "Enter your email address" }]}
-          >
-            <Input disabled={formLoading} />
-          </Form.Item>
+        <Col span={2} lg={8} />
+        {!loggedIn ? (
+          <Col span={20} lg={8}>
+            <Title>{hasAccount ? "Welcome back" : "Register now"}</Title>
+            <Form
+              layout="vertical"
+              name="basic"
+              initialValues={{ remember: true }}
+              onFinish={onFinish}
+            >
+              <Form.Item
+                label="Email"
+                name="id"
+                rules={[
+                  { required: true, message: "Enter your email address" },
+                ]}
+              >
+                <Input disabled={formLoading} />
+              </Form.Item>
 
-          <Form.Item
-            label="Password"
-            name="password"
-            rules={[{ required: true, message: "Enter your password" }]}
-          >
-            <Input.Password disabled={formLoading} />
-          </Form.Item>
-          <Form.Item>
-            <FullBtn size="large" type="primary" htmlType="submit" loading={formLoading}>
-            {hasAccount ? "Login" : "Register"}
-            </FullBtn>
-          </Form.Item>
-          <SwitchLink 
-                type="link" 
-                size="large" 
+              <Form.Item
+                label="Password"
+                name="password"
+                rules={[{ required: true, message: "Enter your password" }]}
+              >
+                <Input.Password disabled={formLoading} />
+              </Form.Item>
+              <Form.Item>
+                <FullBtn
+                  size="large"
+                  type="primary"
+                  htmlType="submit"
+                  loading={formLoading}
+                >
+                  {hasAccount ? "Login" : "Register"}
+                </FullBtn>
+              </Form.Item>
+              <SwitchLink
+                type="link"
+                size="large"
                 onClick={() => {
-                   setHasAccount(!hasAccount);
+                  setHasAccount(!hasAccount);
                 }}
-          >
-              {hasAccount ? "New to the site? Register now" : "Have an account? Login now"}
-          </SwitchLink>
-        </Form>
-        <Divider>Our terms</Divider>
-        <Paragraph>
-            By logging in you are accepting our terms and conditions and privacy policy. You can read
-            those &nbsp;
-             <SwitchLink 
-                  type="link" 
-                  onClick={() => {
-                      props.changePage("/privacy-policy");
-                  }}
-             >
+              >
+                {hasAccount
+                  ? "New to the site? Register now"
+                  : "Have an account? Login now"}
+              </SwitchLink>
+            </Form>
+            <Divider>Our terms</Divider>
+            <Paragraph>
+              By logging in you are accepting our terms and conditions and
+              privacy policy. You can read those &nbsp;
+              <SwitchLink
+                type="link"
+                onClick={() => {
+                  props.changePage("/privacy-policy");
+                }}
+              >
                 here
-             </SwitchLink>
-        </Paragraph>
-        </Col> :  
-         <Col span={20} lg={8}>
-         <Result
-            status="success"
-            title="You are already logged in!"
-            subTitle="Visit your dashboard to start using our features now."
-            extra={[
-              <Button 
+              </SwitchLink>
+            </Paragraph>
+          </Col>
+        ) : (
+          <Col span={20} lg={8}>
+            <Result
+              status="success"
+              title="You are already logged in!"
+              subTitle="Visit your dashboard to start using our features now."
+              extra={[
+                <Button
                   size="large"
                   type="primary"
                   onClick={() => {
                     props.changePage("/dashboard");
-                  }} 
+                  }}
                   key="console"
-              >
+                >
                   Dashboard
-              </Button>,
-            ]}
-         /> 
-         </Col>
-         }
-        <Col span={2} lg={8}/>    
+                </Button>,
+              ]}
+            />
+          </Col>
+        )}
+        <Col span={2} lg={8} />
       </Row>
     </div>
   );
 }
 
 const mapStateToProps = ({ safehub }) => ({
-  userProfile: safehub.userProfile
+  userProfile: safehub.userProfile,
 });
 
-const mapDispatchToProps = dispatch =>
+const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
-      changePage: value => push(value),
+      changePage: (value) => push(value),
     },
     dispatch
   );
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)((Auth));
+export default connect(mapStateToProps, mapDispatchToProps)(Auth);

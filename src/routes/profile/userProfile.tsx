@@ -38,6 +38,7 @@ const basicOrg: Organisation = {
   name: "",
   bedsAvailable: 0,
   postCode: 0,
+  email: "",
 };
 const { Title } = Typography;
 
@@ -105,6 +106,7 @@ function UserProfile(props: {
       bedsAvailable: values.bedsAvailable,
       userId: id,
       postCode: values.postCode,
+      email: email,
     };
 
     try {

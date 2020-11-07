@@ -2,7 +2,16 @@ import * as React from "react";
 import { push } from "connected-react-router";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { Row, Col, Typography, List, Skeleton, Button, message, Divider } from "antd";
+import {
+  Row,
+  Col,
+  Typography,
+  List,
+  Skeleton,
+  Button,
+  message,
+  Divider,
+} from "antd";
 import styled from "styled-components";
 import { NotificationItem, UserProfile } from "../../domain/interfaces";
 import { makePostWithAuth, makeGet } from "../../api/apiRequest";
@@ -16,14 +25,23 @@ const SwitchLink = styled(Button)`
   font-weight: bold;
 `;
 
-function Notifications(props: { notifications: NotificationItem[] | (() => NotificationItem[]); userProfile: UserProfile; setNotifications: (arg0: NotificationItem[]) => void; }) {
-
-  const [notifications, setNotificationsItems] = useState<NotificationItem[]>(props.notifications);
+function Notifications(props: {
+  notifications: NotificationItem[] | (() => NotificationItem[]);
+  userProfile: UserProfile;
+  setNotifications: (arg0: NotificationItem[]) => void;
+}) {
+  const [notifications, setNotificationsItems] = useState<NotificationItem[]>(
+    props.notifications
+  );
+  const userId =
+    props.userProfile && props.userProfile.user ? props.userProfile.userId : "";
 
   const getNotifications = async () => {
     try {
-      const response = await makeGet("notifications");
-      const mine = response.filter(x => x.username === props.userProfile!.user!.email);
+      const response = await makeGet(`notifications/${userId}`);
+      const mine = response.filter(
+        (x) => x.username === props.userProfile!.user!.email
+      );
       props.setNotifications(mine);
       setNotificationsItems(mine);
     } catch (error) {
@@ -32,12 +50,11 @@ function Notifications(props: { notifications: NotificationItem[] | (() => Notif
   };
 
   const onMarkedRead = async (item: NotificationItem) => {
-
-    const readVal =  item.status![0] === "Unread" ? "Read" : "Unread";
+    const readVal = item.status![0] === "Unread" ? "Read" : "Unread";
 
     const dataPost = {
       ...item,
-      status: [readVal]
+      status: [readVal],
     };
     try {
       await makePostWithAuth(`notifications/${item._id}`, dataPost, true);
@@ -48,63 +65,76 @@ function Notifications(props: { notifications: NotificationItem[] | (() => Notif
     }
   };
 
-  const unread = notifications.filter(x => x.status![0] === "Unread").length;
+  const unread = notifications.filter((x) => x.status![0] === "Unread").length;
 
   return (
     <div className="layout">
-        <Row>
-        <Col span={2} lg={6}/>     
-            <Col span={20} lg={12}>
-            <Title>Notifications</Title>
-            <Divider orientation="left" plain={true} >
-              {!notifications ? <Skeleton.Input style={{ width: 100, height: "10px"}} active={true} /> :             
-              <div>
-                {`Notifications unread (${unread ? unread : "0"})`}
-              </div>}
-            </Divider>
-            {notifications === null  ? <div> {[1, 2].map( (_x, y) => {
+      <Row>
+        <Col span={2} lg={6} />
+        <Col span={20} lg={12}>
+          <Title>Notifications</Title>
+          <Divider orientation="left" plain={true}>
+            {!notifications ? (
+              <Skeleton.Input
+                style={{ width: 100, height: "10px" }}
+                active={true}
+              />
+            ) : (
+              <div>{`Notifications unread (${unread ? unread : "0"})`}</div>
+            )}
+          </Divider>
+          {notifications === null ? (
+            <div>
+              {" "}
+              {[1, 2].map((_x, y) => {
                 return <Skeleton key={y} loading={true} active={true} />;
-            })} </div> : 
+              })}{" "}
+            </div>
+          ) : (
             <List
-                header={<div>Your notifications</div>}
-                bordered={true}
-                dataSource={notifications ? notifications : []}
-                renderItem={item => (
-                    <List.Item style={{opacity: item.status![0] === "Read" ? 0.5 : 1}}>
-                    <Typography.Text mark={true}>{item.status![0] === "Unread" ? "[UNREAD]" : "Read"}</Typography.Text> {item.comment} 
-                    <SwitchLink 
-                            type="link"
-                            key="list-del"  
-                            onClick={() => {
-                                onMarkedRead(item);
-                            }} 
-                    >
-                           &nbsp;{item.status![0] === "Unread" ? "mark read" : "mark unread"}
-                    </SwitchLink>
-                    </List.Item>
-                )}
-            />}
-           </Col>
-        </Row>
-      </div>
+              header={<div>Your notifications</div>}
+              bordered={true}
+              dataSource={notifications ? notifications : []}
+              renderItem={(item) => (
+                <List.Item
+                  style={{ opacity: item.status![0] === "Read" ? 0.5 : 1 }}
+                >
+                  <Typography.Text mark={true}>
+                    {item.status![0] === "Unread" ? "[UNREAD]" : "Read"}
+                  </Typography.Text>{" "}
+                  {item.comment}
+                  <SwitchLink
+                    type="link"
+                    key="list-del"
+                    onClick={() => {
+                      onMarkedRead(item);
+                    }}
+                  >
+                    &nbsp;
+                    {item.status![0] === "Unread" ? "mark read" : "mark unread"}
+                  </SwitchLink>
+                </List.Item>
+              )}
+            />
+          )}
+        </Col>
+      </Row>
+    </div>
   );
 }
 
 const mapStateToProps = ({ safehub }) => ({
-    userProfile: safehub.userProfile,
-    notifications: safehub.notifications
+  userProfile: safehub.userProfile,
+  notifications: safehub.notifications,
 });
 
-const mapDispatchToProps = dispatch =>
+const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
-      changePage: value => push(value),
-      setNotifications
+      changePage: (value) => push(value),
+      setNotifications,
     },
     dispatch
   );
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)((Notifications));
+export default connect(mapStateToProps, mapDispatchToProps)(Notifications);

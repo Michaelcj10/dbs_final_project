@@ -1,12 +1,22 @@
-import { PageHeader, Button, Menu, Badge, Avatar  } from "antd";
-import { setUserProfile, setNotifications, setViewedOrganisation, orginitial } from "../../modules/safehub";
+import { PageHeader, Button, Menu, Badge, Avatar } from "antd";
+import {
+  setUserProfile,
+  setNotifications,
+  setViewedOrganisation,
+  orginitial,
+} from "../../modules/safehub";
 import * as React from "react";
 import styled from "styled-components";
 import { push } from "connected-react-router";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { deleteCookie, deleteSession } from "../../services/cookie";
-import { MailOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  MailOutlined,
+  SettingOutlined,
+  UserOutlined,
+  HomeOutlined,
+} from "@ant-design/icons";
 import SubMenu from "antd/lib/menu/SubMenu";
 import { useState } from "react";
 import logo from "../../images/logo.png";
@@ -14,11 +24,11 @@ import { makeGet } from "../../api/apiRequest";
 import { NotificationItem } from "../../domain/interfaces";
 
 const HeaderStyle = styled.div`
-    border: 1px solid rgb(235, 237, 240);
+  border: 1px solid rgb(235, 237, 240);
 `;
 
 const StyledSpanHeading = styled(Button)`
-  font-weight:bold;
+  font-weight: bold;
   padding: 0px;
   color: #272727;
 `;
@@ -29,172 +39,195 @@ const SwitchLink = styled(Button)`
 `;
 
 const Logo = styled.img`
-  width: 70px;
-  cursor:pointer;
+  width: 50px;
+  cursor: pointer;
 `;
 
 const NotificationLink = styled.div`
   cursor: pointer;
+  display: inline-table;
 `;
 
-function SiteHeader(props: { userProfile: { user: { email: string; }; userId: string }; setNotifications: (arg0: NotificationItem[]) => void; changePage: (arg0: string) => void; notifications: NotificationItem[]; setUserProfile: (arg0: {}) => void; }) {
-  const loggedIn = props.userProfile && props.userProfile.user && props.userProfile.user.email;
+function SiteHeader(props: {
+  userProfile: { user: { email: string }; userId: string };
+  setNotifications: (arg0: NotificationItem[]) => void;
+  changePage: (arg0: string) => void;
+  notifications: NotificationItem[];
+  setUserProfile: (arg0: {}) => void;
+}) {
+  const loggedIn =
+    props.userProfile && props.userProfile.user && props.userProfile.user.email;
   const [current, setCurrent] = useState<string>("");
 
-  const handleClick = e => {
+  const handleClick = (e) => {
     setCurrent(e.key);
   };
 
   const getNotifications = async () => {
     try {
-      const response = await makeGet(`notifications/${props.userProfile!.userId}`);
+      const response = await makeGet(
+        `notifications/${props.userProfile!.userId}`
+      );
       props.setNotifications(response.found ? response.found : []);
     } catch (error) {
       props.setNotifications([]);
     }
   };
 
-  React.useEffect( () => {
-
+  React.useEffect(() => {
     async function fetchMyAPI() {
-        await getNotifications();
+      await getNotifications();
     }
 
     fetchMyAPI();
-  },               [] );
+  }, []);
 
   return (
-       <HeaderStyle>
-        <PageHeader
-            className="site-page-header"
-            title={
-              <Logo 
-                  src={logo} 
-                  alt="site logo" 
-                  onClick={() => {
-                     props.changePage("/");
-              }} 
-              />}
-            subTitle={
-              loggedIn ? 
-                <StyledSpanHeading 
-                    key="1"
-                    type="link" 
-                    onClick={() => {
-                      props.changePage("/profile");
-                    }}
-                >{`${props.userProfile.user.email}`}
-                </StyledSpanHeading> : null
-            }
-            extra={loggedIn ?  [
-              <NotificationLink 
-                  key="notifications" 
+    <HeaderStyle>
+      <PageHeader
+        className="site-page-header"
+        title={
+          <Logo
+            src={logo}
+            alt="site logo"
+            onClick={() => {
+              props.changePage("/");
+            }}
+          />
+        }
+        subTitle={
+          loggedIn ? (
+            <StyledSpanHeading
+              key="1"
+              type="link"
+              onClick={() => {
+                props.changePage("/profile");
+              }}
+            >
+              {`${props.userProfile.user.email}`}
+            </StyledSpanHeading>
+          ) : null
+        }
+        extra={
+          loggedIn
+            ? [
+                <NotificationLink
+                  key="notifications"
                   onClick={() => {
                     props.changePage("/notifications");
                   }}
-              >
-              <Badge count={props.notifications.filter(x => x.status![0] !== "Read").length} key="msg-count">
-                <Avatar shape="square" icon={<UserOutlined />} />
-              </Badge>
-              </NotificationLink>
-            ] : [
-              <StyledSpanHeading 
+                >
+                  <Badge
+                    count={
+                      props.notifications.filter((x) => x.status![0] !== "Read")
+                        .length
+                    }
+                    key="msg-count"
+                  >
+                    <Avatar shape="square" icon={<UserOutlined />} />
+                  </Badge>
+                </NotificationLink>,
+              ]
+            : [
+                <StyledSpanHeading
                   key="3"
-                  type="link" 
+                  type="link"
                   onClick={() => {
                     props.changePage("/auth");
                   }}
-              >Login|Register
-              </StyledSpanHeading>
-            ]}
-        />
-        {loggedIn &&
+                >
+                  Login|Register
+                </StyledSpanHeading>,
+              ]
+        }
+      />
+      {loggedIn && (
         <React.Fragment>
-               <Menu onClick={handleClick} selectedKeys={[current]} mode="horizontal">
-          <Menu.Item key="mail" icon={<MailOutlined />}>
-              <SwitchLink 
-                  type="link"
-                  onClick={() => {
-                    props.changePage("/dashboard");
-                  }}
+          <Menu
+            onClick={handleClick}
+            selectedKeys={[current]}
+            mode="horizontal"
+          >
+            <Menu.Item key="mail" icon={<HomeOutlined />}>
+              <SwitchLink
+                type="link"
+                onClick={() => {
+                  props.changePage("/dashboard");
+                }}
               >
-                Dashboard
-              </SwitchLink>
-          </Menu.Item>
-          <SubMenu icon={<SettingOutlined />} title="Options">
-            <Menu.ItemGroup title="Pages">
-                  <Menu.Item>
-              <SwitchLink 
-                  type="link"
-                  onClick={() => {
-                    props.changePage("/dashboard");
-                  }}
-              >
-                Dashboard
+                Dash
               </SwitchLink>
             </Menu.Item>
-            <Menu.Item>
-              <SwitchLink 
-                  type="link"
-                  onClick={() => {
-                    props.changePage("/profile");
-                  }}
+            <SubMenu icon={<SettingOutlined />} title="Options">
+              <Menu.ItemGroup title="Pages">
+                <Menu.Item>
+                  <SwitchLink
+                    type="link"
+                    onClick={() => {
+                      props.changePage("/profile");
+                    }}
+                  >
+                    Profile
+                  </SwitchLink>
+                </Menu.Item>
+                <Menu.Item>
+                  <SwitchLink
+                    type="link"
+                    onClick={() => {
+                      props.changePage("/organisations");
+                    }}
+                  >
+                    Organisations
+                  </SwitchLink>
+                </Menu.Item>
+                <Menu.Item>
+                  <SwitchLink
+                    type="link"
+                    onClick={() => {
+                      props.setNotifications([]);
+                      props.setUserProfile({});
+                      deleteSession();
+                      deleteCookie("token");
+                      setViewedOrganisation(orginitial);
+                      props.changePage("/auth");
+                    }}
+                  >
+                    Logout
+                  </SwitchLink>
+                </Menu.Item>
+              </Menu.ItemGroup>
+            </SubMenu>
+            <Menu.Item key="convos" icon={<MailOutlined />}>
+              <SwitchLink
+                type="link"
+                onClick={() => {
+                  props.changePage("/conversations");
+                }}
               >
-                Profile
+                Inbox
               </SwitchLink>
             </Menu.Item>
-            <Menu.Item>
-              <SwitchLink 
-                  type="link"
-                  onClick={() => {
-                    props.changePage("/organisations");
-                  }}
-              >
-                Organisations
-              </SwitchLink>
-            </Menu.Item>
-            <Menu.Item>
-              <SwitchLink 
-                  type="link"
-                  onClick={() => {
-
-                    props.setNotifications([]);
-                    props.setUserProfile({});
-                    deleteSession();
-                    deleteCookie("token");
-                    setViewedOrganisation(orginitial);
-                    props.changePage("/auth");
-                  }}
-              >
-                Logout
-              </SwitchLink>
-            </Menu.Item>
-            </Menu.ItemGroup>
-          </SubMenu>
-      </Menu>
-       </React.Fragment>
-      }
+          </Menu>
+        </React.Fragment>
+      )}
     </HeaderStyle>
   );
 }
 
 const mapStateToProps = ({ safehub }) => ({
-    userProfile: safehub.userProfile,
-    notifications: safehub.notifications
+  userProfile: safehub.userProfile,
+  notifications: safehub.notifications,
 });
 
-const mapDispatchToProps = dispatch =>
+const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
-      changePage: value => push(value),
+      changePage: (value) => push(value),
       setUserProfile,
       setNotifications,
-      setViewedOrganisation
+      setViewedOrganisation,
     },
     dispatch
   );
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)((SiteHeader));
+export default connect(mapStateToProps, mapDispatchToProps)(SiteHeader);

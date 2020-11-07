@@ -3,11 +3,13 @@ const SET_VIEWED_MSG = "SET_VIEWED_MSG";
 const SET_USER_ORG = "SET_USER_ORG";
 const SET_VIEWED_ORG = "SET_VIEWED_ORG";
 const SET_NOTIFICATIONS = "SET_NOTIFICATIONS";
+const SET_VIEWED_CONVERSATION = "SET_VIEWED_CONVERSATION";
 import {
   MessageItem,
   UserProfile,
   Organisation,
   NotificationItem,
+  ConversationItem,
 } from "../domain/interfaces";
 
 export const msgsinitial: MessageItem = {
@@ -34,6 +36,13 @@ export const orginitial: Organisation = {
   name: "",
   bedsAvailable: 0,
   postCode: 0,
+  email: "",
+};
+export const initialConvo: ConversationItem = {
+  title: "",
+  userId: "",
+  to: "",
+  replies: [],
 };
 
 const initialState = {
@@ -42,6 +51,7 @@ const initialState = {
   organisation: orginitial,
   viewedOrganisation: orginitial,
   notifications: [],
+  viewedConversation: initialConvo,
 };
 
 export default (state = initialState, action) => {
@@ -65,6 +75,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         message: action.message,
+      };
+    case SET_VIEWED_CONVERSATION:
+      return {
+        ...state,
+        viewedConversation: action.conversation,
       };
     case SET_NOTIFICATIONS:
       return {
@@ -91,6 +106,14 @@ export const setViewedMsg = (message: MessageItem) => {
     dispatch({
       type: SET_VIEWED_MSG,
       message,
+    });
+  };
+};
+export const setViewedConversation = (conversation: ConversationItem) => {
+  return (dispatch) => {
+    dispatch({
+      type: SET_VIEWED_CONVERSATION,
+      conversation,
     });
   };
 };

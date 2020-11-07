@@ -8,6 +8,16 @@ export interface MessageItem {
   status?: string[];
 }
 
+export interface ConversationItem {
+  Created_date?: Date;
+  title: string;
+  to: string;
+  replies: CommentReply[];
+  userId: string;
+  _id?: string;
+  status?: string[];
+}
+
 export interface CommentReply {
   Created_date: Date;
   reply: {
@@ -39,6 +49,7 @@ export interface Organisation {
   Created_date?: Date;
   bedsAvailable: number;
   postCode: number;
+  email: string;
 }
 
 export interface NotificationItem {
