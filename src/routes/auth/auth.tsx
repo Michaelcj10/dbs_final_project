@@ -15,9 +15,8 @@ import {
   Result,
 } from "antd";
 import { useEffect, useState } from "react";
-import { makePost, makePostWithAuth } from "../../api/apiRequest";
+import { makePost } from "../../api/apiRequest";
 import { setCookie } from "../../services/cookie";
-import { Organisation } from "../../domain/interfaces";
 
 const { Title, Paragraph } = Typography;
 
@@ -63,33 +62,7 @@ function Auth(props: {
         setLoading(false);
       } else {
         setCookie("token", response.token);
-
-        const orgData: Organisation = {
-          address: "",
-          location: "",
-          contactNumber: "",
-          facebook: "",
-          twitter: "",
-          website: "",
-          name: "",
-          bedsAvailable: 0,
-          userId: "",
-          postCode: 0,
-          email: values.id,
-        };
-
-        try {
-          const url = "organisations";
-          const resp = await makePostWithAuth(url, orgData, false);
-
-          // tslint:disable-next-line: no-console
-          console.log(resp);
-          setLoading(false);
-          props.changePage("/dashboard");
-        } catch (e) {
-          props.changePage("/dashboard");
-          setLoading(false);
-        }
+        props.changePage("/dashboard");
       }
     } catch (e) {
       message.error("Invalid details, try again");
