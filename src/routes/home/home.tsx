@@ -108,7 +108,6 @@ function Home(props: {
   };
 
   React.useEffect(() => {
-    // used for if message deleted, set redux state back to empty
     props.setViewedMsg({
       comment: "",
       replies: [],
@@ -180,13 +179,11 @@ function Home(props: {
       };
 
       try {
-        const response = await makePostWithAuth(
+        await makePostWithAuth(
           `messages/${messageToAction!._id}`,
           newReply,
           true
         );
-        // tslint:disable-next-line: no-console
-        console.log(response);
         message.warning("Comment flagged!");
         getMessages();
         setInProgress(false);

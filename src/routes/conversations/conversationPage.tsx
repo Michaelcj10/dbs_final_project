@@ -28,6 +28,7 @@ function Conversations(props: {
   setViewedConversation: (arg0: ConversationItem) => void;
   changePage: (arg0: string) => void;
 }) {
+  const colorAvatarPallete = ["#1de9b6", "#1890ff"];
   const userId =
     props.userProfile && props.userProfile.user ? props.userProfile.userId : "";
   const email =
@@ -102,11 +103,21 @@ function Conversations(props: {
                       }}
                     >
                       <List.Item.Meta
-                        avatar={<Avatar icon={<UserOutlined />} />}
+                        avatar={
+                          <Avatar
+                            style={{
+                              backgroundColor:
+                                convoItem.from === email
+                                  ? colorAvatarPallete[0]
+                                  : colorAvatarPallete[1],
+                            }}
+                            icon={<UserOutlined />}
+                          />
+                        }
                         title={
                           <StyledSpanHeading>
                             {convoItem.from === email
-                              ? `${convoItem.to}`
+                              ? `You sent to ${convoItem.to}`
                               : `${convoItem.title}`}
                           </StyledSpanHeading>
                         }
