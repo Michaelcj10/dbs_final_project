@@ -119,8 +119,11 @@ function SiteHeader(props: {
                 >
                   <Badge
                     count={
-                      props.notifications.filter((x) => x.status![0] !== "Read")
-                        .length
+                      !props.notifications
+                        ? 0
+                        : props.notifications.filter(
+                            (x) => x.status![0] !== "Read"
+                          ).length
                     }
                     key="msg-count"
                   >

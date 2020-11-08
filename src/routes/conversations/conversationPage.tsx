@@ -42,9 +42,9 @@ function Conversations(props: {
     try {
       const response = await makeGet(`conversations/${userId}`);
 
-      // tslint:disable-next-line: no-console
-      console.log(response);
-      setConversations(response.found);
+      if (response && response.found) {
+        setConversations(response.found);
+      }
     } catch (error) {
       setConversations([]);
     }

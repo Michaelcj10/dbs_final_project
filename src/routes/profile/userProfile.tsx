@@ -84,6 +84,26 @@ function UserProfile(props: {
     return val ? val : "";
   };
 
+  const postMessage = async (beds: number) => {
+    const title = `${profile?.name} ${
+      beds > 0 ? `has ${beds} beds available` : "no longer has beds available"
+    }`;
+
+    const dataPost = {
+      title: title,
+      comment: `${beds} beds available`,
+      username: props.userProfile.user.email,
+      email: props.userProfile.user.email,
+    };
+    setLoading(true);
+    try {
+      await makePostWithAuth("messages", dataPost);
+      setLoading(false);
+    } catch (e) {
+      setLoading(false);
+    }
+  };
+
   const onFinish = async (values: {
     address: string;
     location: string;
@@ -118,6 +138,7 @@ function UserProfile(props: {
       setLoading(false);
       setProfile(response);
       message.success("Sucessfully updated");
+      postMessage(values.bedsAvailable);
     } catch (e) {
       message.error("Invalid details, try again");
       setLoading(false);

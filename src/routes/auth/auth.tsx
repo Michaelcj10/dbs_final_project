@@ -12,11 +12,10 @@ import {
   Typography,
   message,
   Divider,
-  Result,
 } from "antd";
 import { useEffect, useState } from "react";
 import { makePost } from "../../api/apiRequest";
-import { setCookie } from "../../services/cookie";
+import { deleteSession, setCookie } from "../../services/cookie";
 
 const { Title, Paragraph } = Typography;
 
@@ -33,12 +32,12 @@ function Auth(props: {
   userProfile: { user: { email: string } };
   changePage: (arg0: string) => void;
 }) {
-  const loggedIn =
-    props.userProfile && props.userProfile.user && props.userProfile.user.email;
+  const loggedIn = false;
   const [hasAccount, setHasAccount] = useState(true);
   const [formLoading, setLoading] = useState(false);
 
   useEffect(() => {
+    deleteSession();
     if (!loggedIn) {
       message.info("Please login or register to continue");
     }
@@ -74,89 +73,66 @@ function Auth(props: {
     <div className="layout">
       <Row>
         <Col span={2} lg={8} />
-        {!loggedIn ? (
-          <Col span={20} lg={8}>
-            <Title>{hasAccount ? "Welcome back" : "Register now"}</Title>
-            <Form
-              layout="vertical"
-              name="basic"
-              initialValues={{ remember: true }}
-              onFinish={onFinish}
+        <Col span={20} lg={8}>
+          <Title>{hasAccount ? "Welcome back" : "Register now"}</Title>
+          <Form
+            layout="vertical"
+            name="basic"
+            initialValues={{ remember: true }}
+            onFinish={onFinish}
+          >
+            <Form.Item
+              label="Email"
+              name="id"
+              rules={[{ required: true, message: "Enter your email address" }]}
             >
-              <Form.Item
-                label="Email"
-                name="id"
-                rules={[
-                  { required: true, message: "Enter your email address" },
-                ]}
-              >
-                <Input disabled={formLoading} />
-              </Form.Item>
+              <Input disabled={formLoading} />
+            </Form.Item>
 
-              <Form.Item
-                label="Password"
-                name="password"
-                rules={[{ required: true, message: "Enter your password" }]}
-              >
-                <Input.Password disabled={formLoading} />
-              </Form.Item>
-              <Form.Item>
-                <FullBtn
-                  size="large"
-                  type="primary"
-                  htmlType="submit"
-                  loading={formLoading}
-                >
-                  {hasAccount ? "Login" : "Register"}
-                </FullBtn>
-              </Form.Item>
-              <SwitchLink
-                type="link"
+            <Form.Item
+              label="Password"
+              name="password"
+              rules={[{ required: true, message: "Enter your password" }]}
+            >
+              <Input.Password disabled={formLoading} />
+            </Form.Item>
+            <Form.Item>
+              <FullBtn
                 size="large"
-                onClick={() => {
-                  setHasAccount(!hasAccount);
-                }}
+                type="primary"
+                htmlType="submit"
+                loading={formLoading}
               >
-                {hasAccount
-                  ? "New to the site? Register now"
-                  : "Have an account? Login now"}
-              </SwitchLink>
-            </Form>
-            <Divider>Our terms</Divider>
-            <Paragraph>
-              By logging in you are accepting our terms and conditions and
-              privacy policy. You can read those &nbsp;
-              <SwitchLink
-                type="link"
-                onClick={() => {
-                  props.changePage("/privacy-policy");
-                }}
-              >
-                here
-              </SwitchLink>
-            </Paragraph>
-          </Col>
-        ) : (
-          <Col span={20} lg={8}>
-            <Result
-              status="success"
-              title="You are already logged in!"
-              subTitle="Visit your dashboard to start using our features now."
-              extra={[
-                <Button
-                  size="large"
-                  type="primary"
-                  onClick={() => {
-                    props.changePage("/dashboard");
-                  }}
-                  key="console"
-                >
-                  Dashboard
-                </Button>,
-              ]}
-            />
-          </Col>
-        )}
+                {hasAccount ? "Login" : "Register"}
+              </FullBtn>
+            </Form.Item>
+            <SwitchLink
+              type="link"
+              size="large"
+              onClick={() => {
+                setHasAccount(!hasAccount);
+              }}
+            >
+              {hasAccount
+                ? "New to the site? Register now"
+                : "Have an account? Login now"}
+            </SwitchLink>
+          </Form>
+          <Divider>Our terms</Divider>
+          <Paragraph>
+            By logging in you are accepting our terms and conditions and privacy
+            policy. You can read those &nbsp;
+            <SwitchLink
+              type="link"
+              onClick={() => {
+                props.changePage("/privacy-policy");
+              }}
+            >
+              here
+            </SwitchLink>
+          </Paragraph>
+        </Col>
+
         <Col span={2} lg={8} />
       </Row>
     </div>
