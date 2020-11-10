@@ -17,6 +17,8 @@ function IsAuthenticated(props) {
       try {
         const response = await makeGet("me");
         if (!response || !response.user) {
+          // tslint:disable-next-line: no-console
+          console.log("here", response);
           deleteSession();
           props.changePage("/auth");
         } else {

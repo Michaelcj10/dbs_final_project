@@ -65,10 +65,12 @@ function SiteHeader(props: {
 
   const getNotifications = async () => {
     try {
-      const response = await makeGet(
-        `notifications/${props.userProfile!.userId}`
-      );
-      props.setNotifications(response.found);
+      if (props.userProfile.userId) {
+        const response = await makeGet(
+          `notifications/${props.userProfile!.userId}`
+        );
+        props.setNotifications(response.found);
+      }
     } catch (error) {
       props.setNotifications([]);
     }

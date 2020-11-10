@@ -84,6 +84,7 @@ function Auth(props: {
             <Form.Item
               label="Email"
               name="id"
+              data-cy="email-enter"
               rules={[{ required: true, message: "Enter your email address" }]}
             >
               <Input disabled={formLoading} />
@@ -92,12 +93,14 @@ function Auth(props: {
             <Form.Item
               label="Password"
               name="password"
+              data-cy="password-enter"
               rules={[{ required: true, message: "Enter your password" }]}
             >
               <Input.Password disabled={formLoading} />
             </Form.Item>
             <Form.Item>
               <FullBtn
+                data-cy="submit"
                 size="large"
                 type="primary"
                 htmlType="submit"
@@ -107,6 +110,7 @@ function Auth(props: {
               </FullBtn>
             </Form.Item>
             <SwitchLink
+              data-cy="switch-link"
               type="link"
               size="large"
               onClick={() => {
