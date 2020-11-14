@@ -244,6 +244,7 @@ function Home(props: {
               ) : null}
               <AddButton
                 size="large"
+                data-cy="add-msg"
                 type="primary"
                 onClick={() => {
                   props.changePage("/add-message");

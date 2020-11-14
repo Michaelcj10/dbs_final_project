@@ -17,25 +17,25 @@ const FullBtn = styled(Button)`
 
 const AlertTerms = styled.div`
   display: flex;
-  align-items:center;
+  align-items: center;
   margin-bottom: 25px;
 `;
 
-function AddMessage(props: { userProfile: { user: { email: string; }; }; }) {
- const [form] = Form.useForm();
- const [formLoading, setLoading] = useState(false);
+function AddMessage(props: { userProfile: { user: { email: string } } }) {
+  const [form] = Form.useForm();
+  const [formLoading, setLoading] = useState(false);
 
- const resetForm = (): void => {
-  setLoading(false);
-  form.resetFields();
- };
+  const resetForm = (): void => {
+    setLoading(false);
+    form.resetFields();
+  };
 
- const onFinish = async (values) => {
+  const onFinish = async (values) => {
     const dataPost = {
       title: values.title,
       comment: values.comment,
       username: props.userProfile.user.email,
-      email: props.userProfile.user.email
+      email: props.userProfile.user.email,
     };
     setLoading(true);
     try {
@@ -46,70 +46,72 @@ function AddMessage(props: { userProfile: { user: { email: string; }; }; }) {
       message.error("Invalid , try again");
       resetForm();
     }
- };
+  };
 
- return (
-   <IsAuthenticated>
-     <div className="layout">
-      <Row>
-        <Col span={2} lg={8}/>     
-        <Col span={20} lg={8}>
-        <Title>New message</Title>
-        <AlertTerms>
-          <WarningOutlined /> <Paragraph style={{margin: "0px 10px"}}>Do not use names, numbers etc that can identify a client.</Paragraph>
-        </AlertTerms>
-        <Form
-            form={form}
-            layout="vertical"
-            name="basic"
-            initialValues={{ remember: true }}
-            onFinish={onFinish}
-        >
-          <Form.Item
-            label="Title"
-            name="title"
-            rules={[{ required: true, message: "Please enter a title" }]}
-          >
-            <Input
-              disabled={formLoading} 
-            />
-          </Form.Item>
-          <Form.Item
-            label="Comment"
-            name="comment"
-            rules={[{ required: true, message: "Please enter a comment" }]}
-          >
-            <Input
-              disabled={formLoading} 
-            />
-          </Form.Item>
-          <Form.Item>
-            <FullBtn size="large" type="primary" htmlType="submit" loading={formLoading}>
-                Add
-            </FullBtn>
-          </Form.Item>
-        </Form>
-        </Col>
-        <Col span={2} lg={8}/>    
-      </Row>
-    </div>
-   </IsAuthenticated>
+  return (
+    <IsAuthenticated>
+      <div className="layout">
+        <Row>
+          <Col span={2} lg={8} />
+          <Col span={20} lg={8}>
+            <Title>New message</Title>
+            <AlertTerms>
+              <WarningOutlined />{" "}
+              <Paragraph style={{ margin: "0px 10px" }}>
+                Do not use names, numbers etc that can identify a client.
+              </Paragraph>
+            </AlertTerms>
+            <Form
+              form={form}
+              layout="vertical"
+              name="basic"
+              initialValues={{ remember: true }}
+              onFinish={onFinish}
+            >
+              <Form.Item
+                label="Title"
+                name="title"
+                rules={[{ required: true, message: "Please enter a title" }]}
+              >
+                <Input data-cy="add-title" disabled={formLoading} />
+              </Form.Item>
+              <Form.Item
+                label="Comment"
+                name="comment"
+                rules={[{ required: true, message: "Please enter a comment" }]}
+              >
+                <Input data-cy="add-comment" disabled={formLoading} />
+              </Form.Item>
+              <Form.Item>
+                <FullBtn
+                  data-cy="submit-msg"
+                  size="large"
+                  type="primary"
+                  htmlType="submit"
+                  loading={formLoading}
+                >
+                  Add
+                </FullBtn>
+              </Form.Item>
+            </Form>
+          </Col>
+          <Col span={2} lg={8} />
+        </Row>
+      </div>
+    </IsAuthenticated>
   );
 }
 
 const mapStateToProps = ({ safehub }) => ({
-  userProfile: safehub.userProfile
+  userProfile: safehub.userProfile,
 });
 
-const mapDispatchToProps = dispatch =>
+const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
     {
-      changePage: value => push(value),
+      changePage: (value) => push(value),
     },
     dispatch
   );
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)((AddMessage));
+export default connect(mapStateToProps, mapDispatchToProps)(AddMessage);

@@ -173,22 +173,25 @@ function UserProfile(props: {
                 <Fragment>
                   <Card size="small">
                     <Descriptions title="User Info">
-                      <Descriptions.Item label="UserName">
+                      <Descriptions.Item
+                        data-cy="org-username"
+                        label="UserName"
+                      >
                         {profile.name}
                       </Descriptions.Item>
-                      <Descriptions.Item label="Telephone">
+                      <Descriptions.Item data-cy="org-number" label="Telephone">
                         {profile.contactNumber}
                       </Descriptions.Item>
-                      <Descriptions.Item label="fb">
+                      <Descriptions.Item data-cy="org-fb" label="fb">
                         {profile?.facebook !== "" ? <FacebookOutlined /> : "NA"}{" "}
                       </Descriptions.Item>
-                      <Descriptions.Item label="Twitter">
+                      <Descriptions.Item data-cy="org-twitter" label="Twitter">
                         {profile?.twitter !== "" ? <TwitterOutlined /> : "NA"}{" "}
                       </Descriptions.Item>
-                      <Descriptions.Item label="Web">
+                      <Descriptions.Item data-cy="org-web" label="Web">
                         {profile?.website !== "" ? <ChromeOutlined /> : "NA"}{" "}
                       </Descriptions.Item>
-                      <Descriptions.Item label="Beds">
+                      <Descriptions.Item data-cy="org-beds" label="Beds">
                         {profile?.bedsAvailable > 0 ? (
                           <ChromeOutlined />
                         ) : (

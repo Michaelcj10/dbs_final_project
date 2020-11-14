@@ -39,6 +39,8 @@ function Notifications(props: {
   const getNotifications = async () => {
     try {
       const response = await makeGet(`notifications/${userId}`);
+      // tslint:disable-next-line: no-console
+      console.log(response);
       props.setNotifications(response.found);
       setNotificationsItems(response.found);
     } catch (error) {
