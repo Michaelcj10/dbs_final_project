@@ -1,8 +1,9 @@
 import { getCookie } from "../services/cookie";
 
 const fetchReq = require("node-fetch");
-// const apiUrl = "https://project-10521262.herokuapp.com/";
-const apiUrl = "http://localhost:5000/";
+
+const apiUrl = "https://project-10521262.herokuapp.com/";
+//const apiUrl = "http://localhost:5000/";
 export const makeGet = async (url: string) => {
   const cookieAuth = getCookie("token");
 
